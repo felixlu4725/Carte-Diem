@@ -1,6 +1,7 @@
 #include <Wire.h>
 #include <Adafruit_APDS9960.h>
 #include <barcode.h>
+#include <proximity_sensor.h>
 
 #define VERBOSE false
 
@@ -19,33 +20,21 @@ BarcodeScanner barcanner(RX_BARCODE, TX_BARCODE, VERBOSE);
 #define INT_PROX 47
 #define PROXIMITY_THRESHOLD 1
 
-// APDS9960 sensor
-Adafruit_APDS9960 apds;
-
-// Flag to track if APDS9960 is connected
-bool apds_connected = false;
-
-
-volatile bool proximity_triggered = false;
-volatile bool button_pressed = false;
-volatile bool prox_int_timeout = false;
-
-// Button debouncing
-volatile unsigned long last_button_press = 0;
-const unsigned long DEBOUNCE_DELAY = 200;
-
-volatile unsigned long prox_last_trigger_time = 0;
-const unsigned long PROX_DEBOUNCE_DELAY = 1000;
-
-// Statistics
-unsigned long scan_count = 0;
-unsigned long proximity_trigger_count = 0;
-unsigned long button_press_count = 0;
+ProximitySensor proxor(INT_PROX, PROXIMITY_THRESHOLD, VERBOSE);
 
 // ISR
 void IRAM_ATTR button_isr(void);
 void IRAM_ATTR proximity_isr(void);
 
+// ISR Flags
+volatile bool button_pressed = false;
+volatile bool proximity_triggered = false;
+
+// ISR debouncing
+volatile unsigned long last_button_press = 0;
+const unsigned long DEBOUNCE_DELAY = 200;
+volatile unsigned long prox_last_trigger_time = 0;
+const unsigned long PROX_DEBOUNCE_DELAY = 1000;
 
 
 void setup() {
@@ -59,143 +48,53 @@ void setup() {
   }
   delay(500);  // Additional delay for stability
 
-  // Initialize I2C
-  Serial.print("Initializing I2C (SDA: ");
-  Serial.print(I2C_SDA);
-  Serial.print(", SCL: ");
-  Serial.print(I2C_SCL);
-  Serial.println(")...");
-  Wire.begin(I2C_SDA, I2C_SCL);
-  Wire.setClock(100000);  // Set I2C to 100kHz for stability
-  delay(100);             // Give I2C time to initialize
+  // Initialize I2C lines
+  TwoWire I2C = TwoWire(0);
+  I2C.begin(I2C_SDA, I2C_SCL);
+  I2C.setClock(100000); 
 
-  // Initialize APDS9960 interrupt pin BEFORE trying to communicate
+  // Initialize APDS9960 + interrupt pin
+  proxor.begin(&I2C);
   pinMode(INT_PROX, INPUT_PULLUP);
-
-  // Initialize APDS9960
-  Serial.print("Initializing APDS9960 sensor...");
-
-  // Try to initialize APDS9960 with retries
-  int retry_count = 0;
-  const int max_retries = 3;
-
-  while (!apds_connected && retry_count < max_retries) {
-    if (apds.begin()) {
-      apds_connected = true;
-      Serial.println(" OK!");
-      break;
-    }
-    retry_count++;
-    Serial.print(".");
-    delay(500);
-  }
-
-  if (!apds_connected) {
-    Serial.println(" FAILED!");
-    Serial.println("⚠ WARNING: APDS9960 not detected!");
-    Serial.println("   Check connections:");
-    Serial.println("   - SDA -> GPIO 8");
-    Serial.println("   - SCL -> GPIO 9");
-    Serial.println("   - INT -> GPIO 47");
-    Serial.println("   - VIN -> 3.3V");
-    Serial.println("   - GND -> GND");
-    Serial.println("\n   Continuing without proximity sensor...\n");
-  } else {
-    
-
-    // Enable proximity mode
-    apds.enableProximity(true);
-
-
-    if (apds_connected) {
-      // Add delay before setting threshold
-      delay(50);
-
-      // Set the interrupt threshold
-      // Using try-catch pattern with verification
-      apds.setProximityInterruptThreshold(0, PROXIMITY_THRESHOLD);  // <-- swapped range
-      Serial.print("✓ Proximity interrupt when value < ");
-      Serial.println(PROXIMITY_THRESHOLD);
-
-      // Add delay before enabling interrupt
-      delay(50);
-
-      // Enable proximity interrupt
-      apds.enableProximityInterrupt();
-      Serial.println("✓ Proximity interrupt enabled");
-
-      // Clear any pending interrupts
-      apds.clearInterrupt();
-
-      // Attach interrupt to ESP32 pin AFTER configuration
-      delay(50);
-      attachInterrupt(digitalPinToInterrupt(INT_PROX), proximity_isr, FALLING);
-      Serial.print("✓ Interrupt attached to GPIO ");
-      Serial.println(INT_PROX);
-    }
-  }
+  attachInterrupt(digitalPinToInterrupt(INT_PROX), proximity_isr, FALLING);
 
   // Initialize barcode scanner
   barcanner.begin();
 
   // Initialize button with interrupt
   pinMode(INT_BUTTON, INPUT_PULLUP);
-  delay(50);
   attachInterrupt(digitalPinToInterrupt(INT_BUTTON), button_isr, FALLING);
+
   Serial.print("✓ Button interrupt on GPIO ");
   Serial.println(INT_BUTTON);
 
-  // Initialize parser state
   delay(500);  // Give scanner more time to boot
 }
 
 void loop() {
   // Continuously check for barcode data
   if (barcanner.loop()) { // manual mode set
-    apds.clearInterrupt(); 
-    apds.enableProximityInterrupt(); 
+    proxor.clearInterrupt();
+    proxor.enableInterrupt();
   }
   
-
-  // Handle mode change notification
   if (button_pressed) {
     button_pressed = false;
     barcanner.triggerScan();
-    button_press_count++;
   }
 
-  // Handle proximity interrupt trigger (only if APDS9960 is connected)
-  if (proximity_triggered && apds_connected) {
+  if (proximity_triggered) {
     proximity_triggered = false;
 
-    apds.disableProximityInterrupt();
-
     barcanner.setContinuousMode();
+    proxor.disableInterrupt();
 
-    // Read the proximity value with error checking
-    uint8_t proximity = 0;
-
-    // Use a try-catch style approach
-    if (apds_connected) {
-      proximity = apds.readProximity();
-
-      Serial.print("🎯 [PROXIMITY] Interrupt! Value: ");
-      Serial.print(proximity);
-      Serial.println(" → Triggering scan...");
-
-      // Clear the APDS9960 interrupt
-      apds.clearInterrupt();
-
-      proximity_trigger_count++;
-    }
+    uint8_t proximity = proxor.readProximity();
+    proxor.clearInterrupt();
   }
 
-  // Add a small delay to prevent watchdog issues
   delay(1);
 }
-
-
-
 
 void IRAM_ATTR button_isr(void) {
   unsigned long current_time = millis();
