@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "barcode_scanner_freertos",
-    "project_version":    "536da47-dirty",
+    "project_version":    "f65c1b5-dirty",
     "project_path":       "/Users/jinwookshin/Desktop/473/integration",
     "idf_path":           "/Users/jinwookshin/esp/esp-idf",
     "build_dir":          "/Users/jinwookshin/Desktop/473/integration/build",
@@ -1225,7 +1225,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "/Users/jinwookshin/Desktop/473/integration/build/esp-idf/main/libmain.a",
-            "sources": [ "/Users/jinwookshin/Desktop/473/integration/main/main.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/barcode.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/proximity_sensor.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/mfrc522.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/ble_barcode_nimble.c" ],
+            "sources": [ "/Users/jinwookshin/Desktop/473/integration/main/main.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/barcode.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/proximity_sensor.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/mfrc522.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/ble_barcode_nimble.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/loadcells.c" ],
             "include_dirs": [ ".", "interfaces" ]
         },
         "mbedtls": {

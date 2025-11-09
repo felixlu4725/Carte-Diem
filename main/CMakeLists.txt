@@ -5,6 +5,7 @@ idf_component_register(
         "interfaces/proximity_sensor.c"
         "interfaces/mfrc522.c"
         "interfaces/ble_barcode_nimble.c"
+        "interfaces/loadcells.c"
     INCLUDE_DIRS
         "."
         "interfaces"

@@ -14,8 +14,9 @@
 #define TAG "BLE_BARCODE"
 
 // Custom UUIDs (128-bit, in reverse byte order for NimBLE)
+
 // Service UUID: Using a custom service UUID
-static const ble_uuid128_t gatt_svr_svc_barcode_uuid = 
+static const ble_uuid128_t gatt_svr_svc_cartediem_uuid = 
     BLE_UUID128_INIT(0x4f, 0xb1, 0x76, 0xb6, 0x4f, 0x79, 0x89, 0xb2,
                      0x89, 0x45, 0x7e, 0x1d, 0x80, 0x6c, 0x6b, 0xe3);
 
@@ -24,8 +25,28 @@ static const ble_uuid128_t gatt_svr_chr_upc_uuid =
     BLE_UUID128_INIT(0x4f, 0xb1, 0x76, 0xb6, 0x4f, 0x79, 0x89, 0xb2,
                      0x89, 0x45, 0x7e, 0x1d, 0x81, 0x6c, 0x6b, 0xe3);
 
+// Cart tracking RFID UUID: d5eabd06-05a6-4b8d-bb15-8393c3a703de
+static const ble_uuid128_t gatt_svr_chr_rfid_uuid =
+    BLE_UUID128_INIT(0xde, 0x03, 0xa7, 0xc3, 0x93, 0x83, 0x15, 0xbb,
+                     0x8d, 0x4b, 0xa6, 0x05, 0x06, 0xbd, 0xea, 0xd5);
+
+// Payment success or failure UUID: 45ef2927-fd6a-4ba2-ab82-f3f5f27b7967
+static const ble_uuid128_t gatt_svr_chr_payment_uuid =
+    BLE_UUID128_INIT(0x67, 0x79, 0x7b, 0xf2, 0xf5, 0xf3, 0x82, 0xab,
+                     0xa2, 0x4b, 0x6a, 0xfd, 0x27, 0x29, 0xef, 0x45);
+
+// Produce weight UUID: 9f50361c-8ce0-4655-9903-577ca0c7db68
+static const ble_uuid128_t gatt_svr_chr_produce_weight_uuid =
+    BLE_UUID128_INIT(0x68, 0xdb, 0xc7, 0xa0, 0x7c, 0x57, 0x03, 0x99,
+                     0x55, 0x46, 0xe0, 0x8c, 0x1c, 0x36, 0x50, 0x9f);
+
+// Item verification UUID: c7a12053-7add-4a60-bd43-af8f0d171dce
+static const ble_uuid128_t gatt_svr_chr_item_verification_uuid =
+    BLE_UUID128_INIT(0xce, 0x1d, 0x17, 0x0d, 0x8f, 0xaf, 0x43, 0xbd,
+                     0x60, 0x4a, 0xdd, 0x7a, 0x53, 0x20, 0xa1, 0xc7);
+
 // Optional RX characteristic (for receiving data from client if needed)
-static const ble_uuid128_t gatt_svr_chr_rx_uuid = 
+static const ble_uuid128_t gatt_svr_chr_rx_uuid =
     BLE_UUID128_INIT(0x4f, 0xb1, 0x76, 0xb6, 0x4f, 0x79, 0x89, 0xb2,
                      0x89, 0x45, 0x7e, 0x1d, 0x82, 0x6c, 0x6b, 0xe3);
 
@@ -33,6 +54,10 @@ static const ble_uuid128_t gatt_svr_chr_rx_uuid =
 static bool ble_connected = false;
 static uint16_t ble_conn_handle = 0;
 static uint16_t upc_char_handle;
+static uint16_t rfid_char_handle;
+static uint16_t payment_char_handle;
+static uint16_t produce_weight_char_handle;
+static uint16_t item_verification_char_handle;
 static char device_name[32] = "ESP32_Barcode";
 
 // Forward declarations
@@ -43,9 +68,9 @@ static void ble_advertise(void);
 // GATT service definition
 static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
     {
-        // Barcode Service
+        // Cartediem Service
         .type = BLE_GATT_SVC_TYPE_PRIMARY,
-        .uuid = &gatt_svr_svc_barcode_uuid.u,
+        .uuid = &gatt_svr_svc_cartediem_uuid.u,
         .characteristics = (struct ble_gatt_chr_def[]) {
             {
                 // UPC Characteristic (device sends barcode data to client)
@@ -55,13 +80,41 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
                 .val_handle = &upc_char_handle,
             },
             {
+                // Cart tracking RFID Characteristic
+                .uuid = &gatt_svr_chr_rfid_uuid.u,
+                .access_cb = gatt_svr_chr_access_barcode,
+                .flags = BLE_GATT_CHR_F_NOTIFY,
+                .val_handle = &rfid_char_handle,
+            },
+            {
+                // Payment status Characteristic
+                .uuid = &gatt_svr_chr_payment_uuid.u,
+                .access_cb = gatt_svr_chr_access_barcode,
+                .flags = BLE_GATT_CHR_F_NOTIFY,
+                .val_handle = &payment_char_handle,
+            },
+            {
+                // Produce weight Characteristic
+                .uuid = &gatt_svr_chr_produce_weight_uuid.u,
+                .access_cb = gatt_svr_chr_access_barcode,
+                .flags = BLE_GATT_CHR_F_NOTIFY,
+                .val_handle = &produce_weight_char_handle,
+            },
+            {
+                // Item verification Characteristic
+                .uuid = &gatt_svr_chr_item_verification_uuid.u,
+                .access_cb = gatt_svr_chr_access_barcode,
+                .flags = BLE_GATT_CHR_F_NOTIFY,
+                .val_handle = &item_verification_char_handle,
+            },
+            {
                 // RX Characteristic (optional - device receives data from client)
                 .uuid = &gatt_svr_chr_rx_uuid.u,
                 .access_cb = gatt_svr_chr_access_barcode,
                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_WRITE_NO_RSP,
             },
             {
-                0, // No more characteristics in this service
+                0,
             }
         },
     },
@@ -179,7 +232,7 @@ static void ble_advertise(void)
 
     // Set scan response data with UUID
     memset(&fields, 0, sizeof fields);
-    fields.uuids128 = &gatt_svr_svc_barcode_uuid;
+    fields.uuids128 = &gatt_svr_svc_cartediem_uuid;
     fields.num_uuids128 = 1;
     fields.uuids128_is_complete = 1;
 
@@ -248,7 +301,7 @@ static void nimble_host_task(void *param)
     nimble_port_freertos_deinit();
 }
 
-esp_err_t ble_barcode_init(const char *name)
+esp_err_t ble_init(const char *name)
 {
     esp_err_t ret;
     
@@ -305,47 +358,73 @@ esp_err_t ble_barcode_init(const char *name)
     return ESP_OK;
 }
 
-esp_err_t ble_barcode_send(const char *barcode_data)
+// Common BLE send function for all characteristics
+static esp_err_t ble_send_data(uint16_t char_handle, const char *data, const char *data_type)
 {
     if (!ble_connected) {
-        ESP_LOGW(TAG, "Cannot send barcode: no client connected");
+        ESP_LOGW(TAG, "Cannot send %s: no client connected", data_type);
         return ESP_ERR_INVALID_STATE;
     }
-    
-    if (!barcode_data) {
+
+    if (!data) {
         return ESP_ERR_INVALID_ARG;
     }
-    
-    size_t len = strlen(barcode_data);
+
+    size_t len = strlen(data);
     if (len == 0) {
         return ESP_ERR_INVALID_ARG;
     }
-    
+
     // Create mbuf for notification
     struct os_mbuf *om;
-    om = ble_hs_mbuf_from_flat(barcode_data, len);
+    om = ble_hs_mbuf_from_flat(data, len);
     if (!om) {
-        ESP_LOGE(TAG, "Failed to allocate mbuf");
+        ESP_LOGE(TAG, "Failed to allocate mbuf for %s", data_type);
         return ESP_ERR_NO_MEM;
     }
-    
+
     // Send notification
-    int rc = ble_gattc_notify_custom(ble_conn_handle, upc_char_handle, om);
+    int rc = ble_gattc_notify_custom(ble_conn_handle, char_handle, om);
     if (rc != 0) {
-        ESP_LOGE(TAG, "Failed to send notification; rc=%d", rc);
+        ESP_LOGE(TAG, "Failed to send %s notification; rc=%d", data_type, rc);
         return ESP_FAIL;
     }
-    
-    ESP_LOGI(TAG, "Sent barcode via BLE: %s", barcode_data);
+
+    ESP_LOGI(TAG, "Sent %s via BLE: %s", data_type, data);
     return ESP_OK;
 }
 
-bool ble_barcode_is_connected(void)
+esp_err_t ble_send_barcode(const char *barcode_data)
+{
+    return ble_send_data(upc_char_handle, barcode_data, "barcode");
+}
+
+esp_err_t ble_send_rfid(const char *rfid_data)
+{
+    return ble_send_data(rfid_char_handle, rfid_data, "RFID");
+}
+
+esp_err_t ble_send_payment_status(const char *payment_status)
+{
+    return ble_send_data(payment_char_handle, payment_status, "payment status");
+}
+
+esp_err_t ble_send_produce_weight(const char *weight_data)
+{
+    return ble_send_data(produce_weight_char_handle, weight_data, "produce weight");
+}
+
+esp_err_t ble_send_item_verification(const char *weight_data)
+{
+    return ble_send_data(item_verification_char_handle, weight_data, "item verification");
+}
+
+bool ble_is_connected(void)
 {
     return ble_connected;
 }
 
-void ble_barcode_deinit(void)
+void ble_deinit(void)
 {
     int rc = nimble_port_stop();
     if (rc != 0) {
