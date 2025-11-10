@@ -15,7 +15,7 @@ typedef struct LoadCell {
     gpio_num_t clk_pin;
     gpio_num_t data_pin;
     uint8_t gain;
-    int32_t tare_offset;
+    float tare_offset;
     bool type; // false = produce, true = weight verification
 } LoadCell;
 

@@ -65,6 +65,15 @@ esp_err_t ble_send_item_verification(const char *verification_data);
 bool ble_is_connected(void);
 
 /**
+ * @brief Register a callback function to handle received BLE data
+ *
+ * @param callback Function pointer to be called when data is received
+ *                 Signature: void (*callback)(const char *data, uint16_t len)
+ */
+typedef void (*ble_rx_callback_t)(const char *data, uint16_t len);
+void ble_register_rx_callback(ble_rx_callback_t callback);
+
+/**
  * @brief Deinitialize BLE barcode service
  */
 void ble_deinit(void);

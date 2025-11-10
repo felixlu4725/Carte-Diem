@@ -4,12 +4,14 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "esp_timer.h"
+#include <string.h>
 
 #include "interfaces/barcode.h"
 #include "interfaces/proximity_sensor.h"
 #include "interfaces/mfrc522.h"
 #include "interfaces/ble_barcode_nimble.h"
 #include "interfaces/loadcells.h"
+#include "interfaces/cart_rfid.h"
 
 // I2C: Proximity Sensor, IMU, 
 #define SCL_PIN GPIO_NUM_9
@@ -32,6 +34,10 @@
 #define BARCODE_TX_PIN GPIO_NUM_38
 #define BARCODE_RX_PIN GPIO_NUM_39
 
+#define CART_RFID_UART_PORT UART_NUM_2
+#define CART_RFID_TX_PIN GPIO_NUM_5
+#define CART_RFID_RX_PIN GPIO_NUM_16
+
 //Other
 #define BUTTON_PIN GPIO_NUM_37
 #define TAG "MAIN"
@@ -43,8 +49,10 @@ static LoadCell* load_cell = NULL;
 
 static QueueHandle_t button_evt_queue = NULL;
 static QueueHandle_t proximity_evt_queue = NULL;
+static cart_rfid_reader_t* cart_reader = NULL;
 
 static bool continuous_mode = false;
+static bool payment_mode = false;
 
 static void IRAM_ATTR button_isr(void *arg)
 {
@@ -60,20 +68,85 @@ static void IRAM_ATTR proximity_isr(void *arg)
     ESP_EARLY_LOGI(TAG, "Proximity interrupt triggered");
 }
 
-void app_main(void)
+void on_cart_scan_complete(const cart_rfid_tag_t *tags, int count) {
+    ESP_LOGI(TAG, "Found %d items in cart", count);
+
+    // Send via BLE
+    for (int i = 0; i < count; i++) {
+        char msg[128];
+        snprintf(msg, sizeof(msg), "CART:%s", tags[i].tag);
+        // ble_send_barcode(msg);
+        ESP_LOGI(TAG, "RFID tag read: %s", msg);
+    }
+}
+
+// ===== BLE Receive Handler =====
+
+static void handle_ble_command(const char *data, uint16_t len)
 {
-    // Initialize BLE first (NimBLE version)
-    esp_err_t ble_ret = ble_init("ESP32_Barcode_Scanner");
+    ESP_LOGI(TAG, "BLE command received: %s (len=%d)", data, len);
+
+    if (len == 0) {
+        return;
+    }
+
+    switch (data[0]) {
+        case 'T':  // Tare/Calibrate load cell
+            ESP_LOGI(TAG, "BLE Command: Taring load cell");
+            load_cell_tare(load_cell);
+            break;
+        
+        case 'M': // Measure produce weight
+            ESP_LOGI(TAG, "BLE Command: Measuring produce weight");
+            float weight = load_cell_display_pounds(load_cell);
+            char weight_str[32];
+            snprintf(weight_str, sizeof(weight_str), "%.4f", weight);
+            ble_send_produce_weight(weight_str);
+            break;
+
+        case 'P':  // Payment module activation
+            ESP_LOGI(TAG, "BLE Command: Checking payment status - enabling payment module");
+            payment_mode = true;
+            break;
+
+        case 'C':  // Cart RFID: 
+            ESP_LOGI(TAG, "BLE Command: Triggering cart scan");
+            cart_rfid_scan(cart_reader); // TODO: Finish implementation
+            break;
+
+        default:
+            ESP_LOGW(TAG, "BLE Command: Unknown command '%c' (full: %s)", data[0], data);
+            ble_send_barcode("ERR_UNKNOWN_CMD");
+            break;
+    }
+}
+
+// ===== Individual Setup Functions =====
+
+static void ble_setup(void)
+{
+    ESP_LOGI(TAG, "Initializing BLE...");
+    esp_err_t ble_ret = ble_init("Carte_Diem");
     if (ble_ret != ESP_OK) {
         ESP_LOGE(TAG, "BLE initialization failed, but continuing...");
     } else {
         ESP_LOGI(TAG, "BLE barcode service initialized (NimBLE)");
+        // Register BLE receive callback
+        ble_register_rx_callback(handle_ble_command);
     }
+}
 
+static void barcode_setup(void)
+{
+    ESP_LOGI(TAG, "Initializing barcode scanner...");
     barcode_init(&scanner, UART_NUM_1, BARCODE_TX_PIN, BARCODE_RX_PIN, true);
     barcode_set_manual_mode(&scanner);
     ESP_LOGI(TAG, "Barcode scanner ready in manual mode");
+}
 
+static void proximity_setup(void)
+{
+    ESP_LOGI(TAG, "Initializing proximity sensor...");
     proximity_sensor = proximity_sensor_create(PROXIMITY_INT_PIN, PROXIMITY_THRESHOLD, false);
     if (proximity_sensor == NULL || !proximity_sensor_begin(proximity_sensor, I2C_NUM_0, SDA_PIN, SCL_PIN, 100000)) {
         ESP_LOGE(TAG, "Failed to initialize proximity sensor");
@@ -81,31 +154,45 @@ void app_main(void)
     }
     proximity_sensor_enable_interrupt(proximity_sensor);
     ESP_LOGI(TAG, "Proximity sensor ready with threshold %d", PROXIMITY_THRESHOLD);
+}
 
+static void button_setup(void)
+{
+    ESP_LOGI(TAG, "Initializing button...");
     gpio_config_t io_conf = {
         .pin_bit_mask = 1ULL << BUTTON_PIN,
         .mode = GPIO_MODE_INPUT,
         .pull_up_en = GPIO_PULLUP_ENABLE,
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
-        .intr_type = GPIO_INTR_NEGEDGE, 
+        .intr_type = GPIO_INTR_NEGEDGE,
     };
     gpio_config(&io_conf);
 
+    button_evt_queue = xQueueCreate(4, sizeof(uint32_t));
+    gpio_install_isr_service(0);
+    gpio_isr_handler_add(BUTTON_PIN, button_isr, NULL);
+    ESP_LOGI(TAG, "Button ready on GPIO %d", BUTTON_PIN);
+}
+
+static void proximity_interrupt_setup(void)
+{
+    ESP_LOGI(TAG, "Initializing proximity interrupt...");
     gpio_config_t prox_io_conf = {
         .pin_bit_mask = 1ULL << PROXIMITY_INT_PIN,
         .mode = GPIO_MODE_INPUT,
         .pull_up_en = GPIO_PULLUP_ENABLE,
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
-        .intr_type = GPIO_INTR_NEGEDGE, 
+        .intr_type = GPIO_INTR_NEGEDGE,
     };
     gpio_config(&prox_io_conf);
 
-    button_evt_queue = xQueueCreate(4, sizeof(uint32_t));
     proximity_evt_queue = xQueueCreate(4, sizeof(uint32_t));
-    gpio_install_isr_service(0);
-    gpio_isr_handler_add(BUTTON_PIN, button_isr, NULL);
     gpio_isr_handler_add(PROXIMITY_INT_PIN, proximity_isr, NULL);
+    ESP_LOGI(TAG, "Proximity interrupt ready on GPIO %d", PROXIMITY_INT_PIN);
+}
 
+static void payment_setup(void)
+{
     ESP_LOGI(TAG, "Initializing MFRC522 payment card reader...");
     esp_err_t mfrc_result = mfrc522_init(&paymenter, SPI2_HOST, MISO_PIN, MOSI_PIN, SCK_PIN, PAYMENT_CS_PIN, PAYMENT_RST_PIN);
     if (mfrc_result != ESP_OK) {
@@ -113,15 +200,53 @@ void app_main(void)
     } else {
         ESP_LOGI(TAG, "MFRC522 initialized successfully!");
     }
+}
 
-    load_cell = load_cell_create(LOAD_CLK_PIN, LOAD_DATA_PIN, 25, false);
+static void loadcell_setup(void)
+{
+    ESP_LOGI(TAG, "Initializing load cell...");
+    load_cell = load_cell_create(LOAD_CLK_PIN, LOAD_DATA_PIN, 25, true);
     load_cell_begin(load_cell);
+    load_cell_tare(load_cell);
+    ESP_LOGI(TAG, "Load cell initialized and tared.");
+}
 
+static void cart_rfid_setup(void)
+{
+    ESP_LOGI(TAG, "Initializing cart RFID reader...");
+    cart_reader = cart_rfid_init(
+        CART_RFID_UART_PORT,
+        CART_RFID_TX_PIN,
+        CART_RFID_RX_PIN,
+        on_cart_scan_complete
+    );
+    ESP_LOGI(TAG, "Cart RFID reader initialized");
+}
+
+static void setup(void)
+{
+    ESP_LOGI(TAG, "Starting system initialization...");
+
+    ble_setup();
+    barcode_setup();
+    button_setup();
+
+    proximity_setup();
+    proximity_interrupt_setup();
+    payment_setup();
+    loadcell_setup();
+    cart_rfid_setup();
 
     vTaskDelay(pdMS_TO_TICKS(100));
 
+    ESP_LOGI(TAG, "System initialization complete");
     ESP_LOGI(TAG, "Ready: press button on GPIO %d to trigger scan or approach proximity sensor.", BUTTON_PIN);
     ESP_LOGI(TAG, "BLE Status: %s", ble_is_connected() ? "Connected" : "Waiting for connection...");
+}
+
+void app_main(void)
+{
+    setup();
 
     // --- Main task loop ---
     uint8_t uid[10], uid_len = 0;
@@ -134,12 +259,7 @@ void app_main(void)
         uint32_t evt;
         
         if (xQueueReceive(button_evt_queue, &evt, pdMS_TO_TICKS(10)))
-        {
-            produce_weight = load_cell_display_pounds(load_cell);
-            ESP_LOGI(TAG, "Button interrupt → produce weight: %.4f lbs", produce_weight);
-            snprintf(produce_weight_str, sizeof(buf), "%.4f", produce_weight);
-            ble_send_produce_weight(produce_weight_str);
-            
+        {           
             if (!continuous_mode) {
                 ESP_LOGI(TAG, "Button press detected → triggering manual scan");
                 barcode_trigger_scan(&scanner);
@@ -183,28 +303,31 @@ void app_main(void)
             }
         }
 
-        if (mfrc522_read_uid(&paymenter, uid, &uid_len) == ESP_OK && uid_len > 0) {
-            printf("[MAIN] Payment card detected: ");
-            for (int i = 0; i < uid_len; i++) {
-                printf("%02X ", uid[i]);
-            }
-            printf("\n");
+        if (payment_mode) {
+            if (mfrc522_read_uid(&paymenter, uid, &uid_len) == ESP_OK && uid_len > 0) {
+                printf("[MAIN] Payment card detected: ");
+                for (int i = 0; i < uid_len; i++) {
+                    printf("%02X ", uid[i]);
+                }
+                printf("\n");
 
-            uint8_t authorized_uid[] = {0x1A, 0x83, 0x26, 0x03, 0xBC};
-            bool match = (uid_len == 5);
-            for (int i = 0; i < 5 && match; i++) {
-                if (uid[i] != authorized_uid[i]) match = false;
-            }
+                uint8_t authorized_uid[] = {0x1A, 0x83, 0x26, 0x03, 0xBC};
+                bool match = (uid_len == 5);
+                for (int i = 0; i < 5 && match; i++) {
+                    if (uid[i] != authorized_uid[i]) match = false;
+                }
 
-            if (match) {
-                printf("💳 Payment Successful!\n");
-                ble_send_payment_status("1");
-            } else {
-                printf("🚫 Payment Declined. Try another card.\n");
-                ble_send_payment_status("0");
-            }
+                if (match) {
+                    printf("💳 Payment Successful!\n");
+                    ble_send_payment_status("1");
+                } else {
+                    printf("🚫 Payment Declined. Try another card.\n");
+                    ble_send_payment_status("0");
+                }
 
-            vTaskDelay(pdMS_TO_TICKS(500)); 
+                payment_mode = false;  // Disable payment mode after processing
+                vTaskDelay(pdMS_TO_TICKS(500));
+            }
         }
 
         vTaskDelay(pdMS_TO_TICKS(50));

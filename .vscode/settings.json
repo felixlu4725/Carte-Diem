@@ -3,6 +3,7 @@
         "print": "cpp",
         "ble_barcode_nimble.h": "c",
         "proximity_sensor.h": "c",
-        "mfrc522.h": "c"
+        "mfrc522.h": "c",
+        "cart_rfid.h": "c"
     }
 }

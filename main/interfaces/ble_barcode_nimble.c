@@ -46,6 +46,7 @@ static const ble_uuid128_t gatt_svr_chr_item_verification_uuid =
                      0x60, 0x4a, 0xdd, 0x7a, 0x53, 0x20, 0xa1, 0xc7);
 
 // Optional RX characteristic (for receiving data from client if needed)
+// UUID: e36b6c82-1d7e-4589-b289-794fb676b14f
 static const ble_uuid128_t gatt_svr_chr_rx_uuid =
     BLE_UUID128_INIT(0x4f, 0xb1, 0x76, 0xb6, 0x4f, 0x79, 0x89, 0xb2,
                      0x89, 0x45, 0x7e, 0x1d, 0x82, 0x6c, 0x6b, 0xe3);
@@ -58,7 +59,12 @@ static uint16_t rfid_char_handle;
 static uint16_t payment_char_handle;
 static uint16_t produce_weight_char_handle;
 static uint16_t item_verification_char_handle;
+static uint16_t rx_char_handle;
 static char device_name[32] = "ESP32_Barcode";
+
+// RX callback and queue
+static ble_rx_callback_t ble_rx_callback = NULL;
+static QueueHandle_t ble_rx_queue = NULL;
 
 // Forward declarations
 static int gatt_svr_chr_access_barcode(uint16_t conn_handle, uint16_t attr_handle,
@@ -112,6 +118,7 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
                 .uuid = &gatt_svr_chr_rx_uuid.u,
                 .access_cb = gatt_svr_chr_access_barcode,
                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_WRITE_NO_RSP,
+                .val_handle = &rx_char_handle,
             },
             {
                 0,
@@ -133,7 +140,41 @@ static int gatt_svr_chr_access_barcode(uint16_t conn_handle, uint16_t attr_handl
 
         case BLE_GATT_ACCESS_OP_WRITE_CHR:
             ESP_LOGI(TAG, "GATT write characteristic, len=%d", ctxt->om->om_len);
-            // Handle received data if needed
+
+            // Check if this is the RX characteristic
+            if (attr_handle == rx_char_handle) {
+                // Extract data from mbuf
+                uint16_t data_len = OS_MBUF_PKTLEN(ctxt->om);
+                if (data_len > 0 && data_len <= 512) {
+                    // Create a temporary buffer for the received data
+                    uint8_t rx_data[513];  // +1 for null terminator
+                    int rc = ble_hs_mbuf_to_flat(ctxt->om, rx_data, data_len, NULL);
+
+                    if (rc == 0) {
+                        rx_data[data_len] = '\0';  // Null terminate
+                        ESP_LOGI(TAG, "BLE RX data received: %s", (char *)rx_data);
+
+                        // Send to queue if it exists
+                        if (ble_rx_queue != NULL) {
+                            // Create a message structure
+                            struct {
+                                uint8_t data[512];
+                                uint16_t len;
+                            } rx_msg = {0};
+
+                            memcpy(rx_msg.data, rx_data, data_len);
+                            rx_msg.len = data_len;
+
+                            xQueueSendFromISR(ble_rx_queue, &rx_msg, NULL);
+                        }
+
+                        // Call callback if registered
+                        if (ble_rx_callback != NULL) {
+                            ble_rx_callback((const char *)rx_data, data_len);
+                        }
+                    }
+                }
+            }
             return 0;
 
         default:
@@ -424,13 +465,39 @@ bool ble_is_connected(void)
     return ble_connected;
 }
 
+void ble_register_rx_callback(ble_rx_callback_t callback)
+{
+    ble_rx_callback = callback;
+
+    // Create RX queue if not already created (for queue-based reception)
+    if (ble_rx_queue == NULL) {
+        ble_rx_queue = xQueueCreate(4, sizeof(struct {
+            uint8_t data[512];
+            uint16_t len;
+        }));
+    }
+
+    if (callback != NULL) {
+        ESP_LOGI(TAG, "BLE RX callback registered");
+    } else {
+        ESP_LOGI(TAG, "BLE RX callback unregistered");
+    }
+}
+
 void ble_deinit(void)
 {
     int rc = nimble_port_stop();
     if (rc != 0) {
         ESP_LOGE(TAG, "Error stopping NimBLE; rc=%d", rc);
     }
-    
+
     nimble_port_deinit();
+
+    // Clean up RX queue
+    if (ble_rx_queue != NULL) {
+        vQueueDelete(ble_rx_queue);
+        ble_rx_queue = NULL;
+    }
+
     ESP_LOGI(TAG, "BLE barcode service deinitialized");
 }

@@ -1,9 +1,10 @@
 #include "loadcells.h"
 #include <math.h>
 #include <time.h>
+#include "esp_rom_sys.h"
 
 LoadCell* load_cell_create(gpio_num_t clk_pin, gpio_num_t data_pin, uint8_t gain, bool type) {
-	LoadCell* cell = (LoadCell*) malloc(sizeof(LoadCell*));
+	LoadCell* cell = (LoadCell*) malloc(sizeof(LoadCell));
 	if (cell == NULL) {
 		return NULL;
 	}
@@ -21,7 +22,24 @@ void load_cell_destroy(LoadCell* lc) {
 }
 
 void load_cell_begin(LoadCell* lc) {
-	load_cell_reset(lc);
+    // Configure CLK pin as output
+    gpio_config_t io_conf = {
+        .intr_type = GPIO_INTR_DISABLE,
+        .mode = GPIO_MODE_OUTPUT,
+        .pin_bit_mask = (1ULL << lc->clk_pin),
+        .pull_down_en = 0,
+        .pull_up_en = 0
+    };
+    gpio_config(&io_conf);
+
+    // Configure DATA pin as input with pull-up
+    io_conf.mode = GPIO_MODE_INPUT;
+    io_conf.pin_bit_mask = (1ULL << lc->data_pin);
+    io_conf.pull_up_en = 1;
+    gpio_config(&io_conf);
+
+    // Reset HX711
+    load_cell_reset(lc);
 }
 
 void load_cell_clk_low(LoadCell* lc) {
@@ -36,15 +54,15 @@ void load_cell_reset(LoadCell* lc) {
 	load_cell_clk_high(lc);
     vTaskDelay(pdMS_TO_TICKS(1));
     load_cell_clk_low(lc);
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    vTaskDelay(pdMS_TO_TICKS(800)); // was 800
 }
 
 void load_cell_tare(LoadCell* lc) {
 	long acc = 0;
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 3; i++) {
 		acc += load_cell_average_channel(lc);
 	}
-	lc->tare_offset = acc/10;
+	lc->tare_offset = (float)acc/3.0;
 }
 
 int32_t load_cell_read_channel(LoadCell* lc) {
@@ -53,9 +71,8 @@ int32_t load_cell_read_channel(LoadCell* lc) {
 }
 
 int32_t load_cell_read_channel_raw(LoadCell* lc) {
-	while (gpio_get_level(lc->data_pin) == 1);
-
-    load_cell_clk_low(lc);
+	while (gpio_get_level(lc->data_pin) == 1) vTaskDelay(pdMS_TO_TICKS(1));
+	load_cell_clk_low(lc);
     uint32_t val = 0;
     for (int i = 0; i < 24; i++) { // read 24 bits
     	load_cell_clk_high(lc);
@@ -73,18 +90,18 @@ int32_t load_cell_read_channel_raw(LoadCell* lc) {
     	val |= 0xFF000000;
     }
 
-    return (int32_t) val;
+    return (int32_t)val;
 }
 
 int32_t load_cell_average_channel(LoadCell* lc){
-	int32_t buf[25];
-	for (uint8_t i = 0; i < 25; i++) {
+	int32_t buf[5];
+	for (uint8_t i = 0; i < 5; i++) {
 		buf [i] = load_cell_read_channel(lc);
-	    vTaskDelay(pdMS_TO_TICKS(5));
+    	vTaskDelay(pdMS_TO_TICKS(5));
 	}
 
 	// insertion sort to isolate outliers
-	for (uint8_t i = 1; i < 25; i++) {
+	for (uint8_t i = 1; i < 5; i++) {
 		int32_t key = buf[i];
 		int8_t j = i-1;
 		while (j >= 0 && buf[j] > key) {
@@ -96,8 +113,8 @@ int32_t load_cell_average_channel(LoadCell* lc){
 
 	// ignore two smallest and two largest values (potential outliers)
 	int32_t sum = 0;
-	uint8_t start = 2;
-	uint8_t end = 23;
+	uint8_t start = 1;
+	uint8_t end = 4;
 
 	for (uint8_t i = start; i < end; i++) {
 		sum += buf[i];
@@ -108,7 +125,7 @@ int32_t load_cell_average_channel(LoadCell* lc){
 
 float load_cell_display_pounds(LoadCell* lc) {
 	int32_t raw = load_cell_average_channel(lc);
-	int32_t net = raw - lc->tare_offset;
+	float net = raw - lc->tare_offset;
 
 	float scale = lc->type ? WEIGHT_VERIFICATION_SCALE_VALUE : PRODUCE_SCALE_VALUE; 
 	float grams = net/scale;
@@ -127,13 +144,14 @@ float load_cell_display_pounds(LoadCell* lc) {
 }
 
 void load_cell_delay_us(LoadCell* lc, uint32_t us) {
-    struct timespec start, now;
-    clock_gettime(CLOCK_MONOTONIC, &start);
+    // struct timespec start, now;
+    // clock_gettime(CLOCK_MONOTONIC, &start);
 
-    uint64_t start_us = start.tv_sec * 1000000ULL + start.tv_nsec / 1000;
-    uint64_t target = start_us + us;
+    // uint64_t start_us = start.tv_sec * 1000000ULL + start.tv_nsec / 1000;
+    // uint64_t target = start_us + us;
 
-    do {
-        clock_gettime(CLOCK_MONOTONIC, &now);
-    } while ((now.tv_sec * 1000000ULL + now.tv_nsec / 1000) < target);
+    // do {
+    //     clock_gettime(CLOCK_MONOTONIC, &now);
+    // } while ((now.tv_sec * 1000000ULL + now.tv_nsec / 1000) < target);
+	esp_rom_delay_us(us);
 }
