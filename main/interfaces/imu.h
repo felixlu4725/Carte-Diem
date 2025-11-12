@@ -4,6 +4,7 @@
 #include "driver/i2c_master.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/timers.h"
+#include "freertos/queue.h"
 
 enum IMUstatus {
     SLEEP,
@@ -31,7 +32,7 @@ typedef struct {
     // Activity tracking
     uint32_t idle_counter_ms;
     TimerHandle_t activity_timer;
-    void (*idle_callback)(void); // ISR-like callback when idle 5 min
+    QueueHandle_t idle_event_queue;  // Queue to notify main task of idle events
 } ICM20948_t;
 
 void icm20948_init(ICM20948_t *device, i2c_master_bus_handle_t bus_handle);
@@ -44,4 +45,7 @@ esp_err_t icm20948_set_accelG(ICM20948_t *device, uint8_t g);
 // New functions
 float icm20948_compute_heading(ICM20948_t *device);
 bool icm20948_is_moving(ICM20948_t *device);
-void icm20948_start_activity_monitor(ICM20948_t *device, void (*callback)(void));
+void icm20948_start_activity_monitor(ICM20948_t *device, QueueHandle_t idle_queue);
+void icm20948_activity_task(ICM20948_t *device);
+esp_err_t icm20948_select_bank(ICM20948_t *dev, uint8_t bank);
+esp_err_t icm20948_init_mag(ICM20948_t *dev);

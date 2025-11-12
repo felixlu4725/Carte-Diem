@@ -53,6 +53,7 @@ static LoadCell* load_cell = NULL;
 
 static QueueHandle_t button_evt_queue = NULL;
 static QueueHandle_t proximity_evt_queue = NULL;
+static QueueHandle_t imu_idle_evt_queue = NULL;
 static cart_rfid_reader_t* cart_reader = NULL;
 
 static bool continuous_mode = false;
@@ -79,7 +80,7 @@ void on_cart_scan_complete(const cart_rfid_tag_t *tags, int count) {
     for (int i = 0; i < count; i++) {
         char msg[128];
         snprintf(msg, sizeof(msg), "CART:%s", tags[i].tag);
-        // ble_send_barcode(msg);
+        ble_send_barcode(msg);
         ESP_LOGI(TAG, "RFID tag read: %s", msg);
     }
 }
@@ -119,22 +120,25 @@ static void handle_ble_command(const char *data, uint16_t len)
             break;
 
         case 'I': // IMU:
-            if("IMU_CHECK_ACTIVITY" == data) {
+            if(strcmp("IMU_CHECK_ACTIVITY", data) == 0) {
                 ESP_LOGI(TAG, "BLE Command: Checking IMU activity");
                 if(icm20948_is_moving(&imu_sensor)) {
                     ESP_LOGI(TAG, "IMU reports: Cart is moving");
                     // Send BLE notification
+                    ble_send_barcode("IMU_MOVING");
                 } else {
                     ESP_LOGI(TAG, "IMU reports: Cart is idle");
                     // Send BLE notification
+                    ble_send_barcode("IMU_IDLE");
                 }
             }
-            else if("IMU_GET_HEADING" == data) {
+            else if(strcmp("IMU_GET_HEADING", data) == 0) {
                 ESP_LOGI(TAG, "BLE Command: Getting IMU heading");
                 float heading = icm20948_compute_heading(&imu_sensor);
                 char heading_str[32];
                 snprintf(heading_str, sizeof(heading_str), "%.2f", heading);
                 // Send BLE notification with heading
+                ble_send_barcode(heading_str);
             }
             break;
         default:
@@ -144,12 +148,12 @@ static void handle_ble_command(const char *data, uint16_t len)
     }
 }
 
-// ===== IMU Callbacks =====
+// ===== IMU Idle Event Handler (called from main loop, not from timer context) =====
 
-static void imu_idle_callback(void)
+static void handle_imu_idle_event(void)
 {
-    ESP_LOGI(TAG, "⏱ IMU: Cart idle for 5 minutes - no motion detected");
-    // TODO: send BLE notifiation
+    // ESP_LOGI(TAG, "⏱ IMU: Cart idle for 5 minutes - no motion detected");
+    // ble_send_barcode("IMU_IDLE");
 }
 
 // ===== Individual Setup Functions =====
@@ -167,7 +171,6 @@ static void i2c_setup(void)
         },
         .sda_io_num = SDA_PIN,
         .scl_io_num = SCL_PIN,
-        .lclk_speed_hz = 100000,
     };
     ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_handle));
     ESP_LOGI(TAG, "I2C master bus initialized");
@@ -229,10 +232,25 @@ static void imu_setup(void){
     icm20948_init(&imu_sensor, i2c_bus_handle);
     ESP_LOGI(TAG, "IMU initialized successfully");
 
-    // Start FreeRTOS-based activity monitoring with 5-minute idle timeout
-    icm20948_start_activity_monitor(&imu_sensor, imu_idle_callback);
+    imu_idle_evt_queue = xQueueCreate(4, sizeof(uint32_t));
+    if (imu_idle_evt_queue == NULL) {
+        ESP_LOGE(TAG, "Failed to create IMU idle event queue");
+        return;
+    }
+
+    // Start IMU monitor first
+    icm20948_start_activity_monitor(&imu_sensor, imu_idle_evt_queue);
+
+    // Try accel read (but don't exit)
+    if(icm20948_read_accel(&imu_sensor) != ESP_OK){
+        ESP_LOGW(TAG, "IMU WARNING: accel read failed. System will still run but IMU will be inaccurate");
+    } else {
+        ESP_LOGI(TAG, "IMU accelerometer verified working");
+    }
+
     ESP_LOGI(TAG, "IMU activity monitor started (5-minute idle timeout)");
 }
+
 
 static void proximity_interrupt_setup(void)
 {
@@ -321,10 +339,10 @@ void app_main(void)
     while (1)
     {
         uint32_t evt;
-        
+
         // button press
         if (xQueueReceive(button_evt_queue, &evt, pdMS_TO_TICKS(10)))
-        {           
+        {
             if (!continuous_mode) {
                 ESP_LOGI(TAG, "Button press detected → triggering manual scan");
                 barcode_trigger_scan(&scanner);
@@ -344,6 +362,15 @@ void app_main(void)
             }
 
             proximity_sensor_clear_interrupt(proximity_sensor);
+        }
+
+        // IMU activity tracking (call periodically to detect motion and track idle time)
+        icm20948_activity_task(&imu_sensor);
+
+        // IMU idle event (cart idle for 5 minutes)
+        if (xQueueReceive(imu_idle_evt_queue, &evt, pdMS_TO_TICKS(10)))
+        {
+            handle_imu_idle_event();
         }
 
         // barcode reading
