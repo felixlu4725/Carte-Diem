@@ -154,6 +154,8 @@ void icm20948_init(ICM20948_t *device, i2c_master_bus_handle_t bus_handle)
     device->idle_event_queue = NULL;
     device->last_queue_send_ms = 0;
     device->first_queue_send_done = false;
+    device->was_idle_5min = false;
+    device->motion_after_idle_queue = NULL;
 
     // --- Full chip reset ---
     icm20948_write_byte(device, ICM20948_PWR_MGMT_1, 0x80);  // DEVICE_RESET
@@ -252,7 +254,7 @@ void icm20948_activity_task(ICM20948_t *dev)
     if (!icm20948_is_moving(dev)) {
         dev->idle_counter_ms += 1000;
         if (dev->idle_counter_ms >= IMU_IDLE_TIME_MINUTES * 60 * 1000) {
-            ESP_LOGI(TAG, "IMU idle threshold reached (%u ms) - sending event", dev->idle_counter_ms);
+            dev->was_idle_5min = true;  // Mark that we've been idle for 5+ minutes
 
             // Send idle event to queue (non-blocking from task context)
             if (dev->idle_event_queue) {
@@ -260,6 +262,7 @@ void icm20948_activity_task(ICM20948_t *dev)
 
                 // First queue send
                 if (!dev->first_queue_send_done) {
+                    ESP_LOGI(TAG, "IMU idle threshold reached (%u ms) - sending event", dev->idle_counter_ms);
                     xQueueSend(dev->idle_event_queue, &idle_event, 0);
                     dev->first_queue_send_done = true;
                     dev->last_queue_send_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
@@ -270,6 +273,7 @@ void icm20948_activity_task(ICM20948_t *dev)
                     uint32_t time_since_last_send = current_ms - dev->last_queue_send_ms;
 
                     if (time_since_last_send >= 60000) {  // 1 minute = 60000 ms
+                        ESP_LOGI(TAG, "IMU idle threshold reached (%u ms) - sending event", dev->idle_counter_ms);
                         xQueueSend(dev->idle_event_queue, &idle_event, 0);
                         dev->last_queue_send_ms = current_ms;
                         ESP_LOGI(TAG, "Queue send repeated (1 min throttle)");
@@ -278,6 +282,17 @@ void icm20948_activity_task(ICM20948_t *dev)
             }
         }
     } else {
+        // Motion detected
+        if (dev->was_idle_5min) {
+            // IMU was idle for 5+ minutes and motion just resumed
+            ESP_LOGI(TAG, "Motion detected after 5+ minute idle - sending motion event");
+            if (dev->motion_after_idle_queue) {
+                uint32_t motion_event = 1;
+                xQueueSend(dev->motion_after_idle_queue, &motion_event, 0);
+            }
+            dev->was_idle_5min = false;  // Reset the flag
+        }
+
         dev->idle_counter_ms = 0;
         dev->first_queue_send_done = false;  // Reset when movement detected
         ESP_LOGI(TAG, "Movement detected - resetting idle counter");

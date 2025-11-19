@@ -8,14 +8,16 @@ idf_component_register(
         "interfaces/loadcells.c"
         "interfaces/item_rfid.c"
         "interfaces/imu.c"
+        "interfaces/cart_tracking.c"
     INCLUDE_DIRS
         "."
         "interfaces"
-    REQUIRES 
+    REQUIRES
         driver
         esp_timer
         nvs_flash
         bt
+        spiffs
     PRIV_REQUIRES
         esp_adc
 )

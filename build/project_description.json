@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "barcode_scanner_freertos",
-    "project_version":    "e6d8549-dirty",
+    "project_version":    "76f5355-dirty",
     "project_path":       "/Users/jinwookshin/Desktop/473/integration",
     "idf_path":           "/Users/jinwookshin/esp/esp-idf",
     "build_dir":          "/Users/jinwookshin/Desktop/473/integration/build",
@@ -1220,12 +1220,12 @@
             "dir": "/Users/jinwookshin/Desktop/473/integration/main",
             "type": "LIBRARY",
             "lib": "__idf_main",
-            "reqs": [ "driver", "esp_timer", "nvs_flash", "bt" ],
+            "reqs": [ "driver", "esp_timer", "nvs_flash", "bt", "spiffs" ],
             "priv_reqs": [ "esp_adc" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "/Users/jinwookshin/Desktop/473/integration/build/esp-idf/main/libmain.a",
-            "sources": [ "/Users/jinwookshin/Desktop/473/integration/main/main.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/barcode.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/proximity_sensor.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/mfrc522.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/ble_barcode_nimble.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/loadcells.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/item_rfid.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/imu.c" ],
+            "sources": [ "/Users/jinwookshin/Desktop/473/integration/main/main.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/barcode.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/proximity_sensor.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/mfrc522.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/ble_barcode_nimble.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/loadcells.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/item_rfid.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/imu.c", "/Users/jinwookshin/Desktop/473/integration/main/interfaces/cart_tracking.c" ],
             "include_dirs": [ ".", "interfaces" ]
         },
         "mbedtls": {
@@ -2922,7 +2922,7 @@
             "prefix": "idf",
             "dir": "/Users/jinwookshin/Desktop/473/integration/main",
             "lib": "__idf_main",
-            "reqs": [ "driver", "esp_timer", "nvs_flash", "bt" ],
+            "reqs": [ "driver", "esp_timer", "nvs_flash", "bt", "spiffs" ],
             "priv_reqs": [ "esp_adc" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],

@@ -38,6 +38,8 @@ typedef struct {
     QueueHandle_t idle_event_queue;  // Queue to notify main task of idle events
     uint32_t last_queue_send_ms;     // Timestamp of last queue send (for 1-min throttling)
     bool first_queue_send_done;      // Flag to track first queue send
+    bool was_idle_5min;              // Flag to track if IMU was idle for 5+ minutes
+    QueueHandle_t motion_after_idle_queue;  // Queue to notify main task when motion resumes after idle
 } ICM20948_t;
 
 /**

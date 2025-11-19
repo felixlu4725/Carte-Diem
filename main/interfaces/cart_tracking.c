@@ -1,8 +1,26 @@
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <stdint.h>
 
-// #define UART_PORT   UART_NUM_1
-// #define TX_PIN      17
-// #define RX_PIN      16
-// #define BUF_SIZE    1024
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "driver/uart.h"
+#include "driver/gpio.h"
+#include "esp_log.h"
+#include "esp_vfs.h"
+#include "esp_spiffs.h"
+
+#include "cartediem_defs.h"
+#include "ble_barcode_nimble.h"
+#include "cart_tracking.h"
+
+#define UART_PORT   CART_TRACKING_UART_PORT
+#define TX_PIN      CART_TRACKING_TX_PIN
+#define RX_PIN      CART_TRACKING_RX_PIN
+#define BUF_SIZE    2048
 
 static const char *TAG = "CartTracking";
 
@@ -40,6 +58,9 @@ unsigned long lastFrameTime = 0;
 bool burstDone = false;
 const unsigned long BURST_GAP = 1000; //ms
 
+// Forward declaration
+void saveBurstToFile(void);
+
 // -------------------------- Print Helper --------------------------
 void printBurst(void) {
     printf("\n===== TAG BURST =====\n");
@@ -64,20 +85,47 @@ void startSession(void){
     }
 }
 
-void endSession(void) {
+void endSession(bool sendBLE) {
     FILE *f = fopen("/spiffs/session.log", "r");
     if (f) {
-        char line[128];
-        while (fgets(line, sizeof(line), f)) {
-            printf("%s", line);
+        if (sendBLE) {
+            // Send log data in chunks to avoid stack overflow
+            char chunk[256];  // Smaller buffer for reading chunks
+
+            if (ble_is_connected()) {
+                ESP_LOGI(TAG, "Sending cart tracking log via BLE in chunks...");
+
+                // Read and send file line by line
+                while (fgets(chunk, sizeof(chunk), f)) {
+                    esp_err_t send_ret = ble_send_rfid(chunk);
+                    if (send_ret != ESP_OK) {
+                        ESP_LOGW(TAG, "✗ Failed to send chunk via BLE");
+                        break;
+                    }
+                    vTaskDelay(pdMS_TO_TICKS(10));  // Small delay between chunks
+                }
+                ESP_LOGI(TAG, "✓ Cart tracking log sent via BLE");
+            } else {
+                ESP_LOGW(TAG, "⚠ BLE not connected - log not sent");
+            }
+            fclose(f);
+        } else {
+            // Just print the log without sending
+            char line[128];
+            while (fgets(line, sizeof(line), f)) {
+                printf("%s", line);
+            }
+            fclose(f);
         }
-        fclose(f);
+    } else {
+        ESP_LOGW(TAG, "Failed to open session log file");
     }
 
+    // Clean up the session file
     if (remove("/spiffs/session.log") == 0) {
-        ESP_LOGI("SESSION", "Session file deleted successfully");
+        ESP_LOGI(TAG, "Session file deleted successfully");
     } else {
-        ESP_LOGE("SESSION", "Failed to delete session file");
+        ESP_LOGE(TAG, "Failed to delete session file");
     }
 }
 
@@ -123,14 +171,17 @@ void BurstRead_CartTracking(void) {
     collecting = false;
     index_ = 0;
     burstDone = false;
-    
-    //ESP_LOGI(TAG, "Sending start command...");
+
+    ESP_LOGI(TAG, "Starting burst read - sending UART commands");
     uart_write_bytes(UART_PORT, (const char *)stopCmd, sizeof(stopCmd));
     vTaskDelay(pdMS_TO_TICKS(10));
     uart_write_bytes(UART_PORT, (const char *)startCmd, sizeof(startCmd));
     vTaskDelay(pdMS_TO_TICKS(10));
 
     uint8_t b = 0;
+
+    unsigned long startTime = millis();
+    const unsigned long TIMEOUT_MS = 3000; // 3 second timeout for entire burst read
 
     while (1) {
         int read_bytes = read_from_UART_LINE(&b);
@@ -139,6 +190,13 @@ void BurstRead_CartTracking(void) {
                 printBurst();
                 vTaskDelay(pdMS_TO_TICKS(10));
                 burstDone = false;
+                ESP_LOGI(TAG, "Burst read complete - exiting");
+                return; // Exit after completing a burst
+            }
+            // Timeout check - exit if no data for too long
+            if (tagCount == 0 && (millis() - startTime) > TIMEOUT_MS) {
+                ESP_LOGW(TAG, "Burst read timeout - no tags found");
+                return;
             }
             continue;
         }
@@ -209,6 +267,8 @@ void BurstRead_CartTracking(void) {
                     tags[tagCount].rssi = rssi;
                     tags[tagCount].antenna = antenna;
                     tags[tagCount].timestamp = currentTime;
+                    ESP_LOGI(TAG, "RFID Tag #%d: %s | RSSI: %d dBm | Antenna: %d",
+                             tagCount + 1, tagHex, rssi, antenna);
                     tagCount++;
                 }
 
