@@ -182,6 +182,7 @@ void BurstRead_CartTracking(void) {
 
     unsigned long startTime = millis();
     const unsigned long TIMEOUT_MS = 3000; // 3 second timeout for entire burst read
+    bool burst_completed = false; // Flag to exit after burst completion
 
     while (1) {
         int read_bytes = read_from_UART_LINE(&b);
@@ -236,7 +237,7 @@ void BurstRead_CartTracking(void) {
                     burstDone = true;
                     lastFrameTime = currentTime;
                 }
-                
+
                 char tagHex[64] = {0};
                 for (int i = 0; i < tagLen && i < 32; i++) {
                     char tmp[4];
@@ -254,12 +255,13 @@ void BurstRead_CartTracking(void) {
                     uint8_t rssiByte = buffer[11 + tagLen + 1];
                     rssi = (int)rssiByte;
                 }
-                
+
                 if(currentTime - lastFrameTime > BURST_GAP) {
                     printBurst();
                     vTaskDelay(pdMS_TO_TICKS(10));
-                    burstDone = false;
+                    burst_completed = true; // Mark burst as completed
                     ESP_LOGI(TAG, "Burst done");
+                    return; // Exit immediately after burst completion
                 }
 
                 if (tagCount < 10) {

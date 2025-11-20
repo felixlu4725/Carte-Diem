@@ -68,6 +68,14 @@ static uint16_t misc_char_handle;
 static uint16_t rx_char_handle;
 static char device_name[32] = "ESP32_Barcode";
 
+// Subscription tracking
+static bool rfid_notify_enabled = false;
+static bool upc_notify_enabled = false;
+static bool payment_notify_enabled = false;
+static bool produce_weight_notify_enabled = false;
+static bool item_verification_notify_enabled = false;
+static bool misc_notify_enabled = false;
+
 // RX callback and queue
 static ble_rx_callback_t ble_rx_callback = NULL;
 static QueueHandle_t ble_rx_queue = NULL;
@@ -249,6 +257,27 @@ static int ble_gap_event(struct ble_gap_event *event, void *arg)
                      event->subscribe.cur_notify,
                      event->subscribe.prev_indicate,
                      event->subscribe.cur_indicate);
+
+            // Track subscription status for each characteristic
+            if (event->subscribe.attr_handle == upc_char_handle) {
+                upc_notify_enabled = event->subscribe.cur_notify;
+                ESP_LOGI(TAG, "UPC characteristic notify: %s", event->subscribe.cur_notify ? "enabled" : "disabled");
+            } else if (event->subscribe.attr_handle == rfid_char_handle) {
+                rfid_notify_enabled = event->subscribe.cur_notify;
+                ESP_LOGI(TAG, "RFID characteristic notify: %s", event->subscribe.cur_notify ? "enabled" : "disabled");
+            } else if (event->subscribe.attr_handle == payment_char_handle) {
+                payment_notify_enabled = event->subscribe.cur_notify;
+                ESP_LOGI(TAG, "Payment characteristic notify: %s", event->subscribe.cur_notify ? "enabled" : "disabled");
+            } else if (event->subscribe.attr_handle == produce_weight_char_handle) {
+                produce_weight_notify_enabled = event->subscribe.cur_notify;
+                ESP_LOGI(TAG, "Produce weight characteristic notify: %s", event->subscribe.cur_notify ? "enabled" : "disabled");
+            } else if (event->subscribe.attr_handle == item_verification_char_handle) {
+                item_verification_notify_enabled = event->subscribe.cur_notify;
+                ESP_LOGI(TAG, "Item verification characteristic notify: %s", event->subscribe.cur_notify ? "enabled" : "disabled");
+            } else if (event->subscribe.attr_handle == misc_char_handle) {
+                misc_notify_enabled = event->subscribe.cur_notify;
+                ESP_LOGI(TAG, "Misc characteristic notify: %s", event->subscribe.cur_notify ? "enabled" : "disabled");
+            }
             return 0;
     }
 
@@ -419,10 +448,15 @@ esp_err_t ble_init(const char *name)
 /**
  * @brief Send data to connected BLE client via notification
  */
-static esp_err_t ble_send_data(uint16_t char_handle, const char *data, const char *data_type)
+static esp_err_t ble_send_data(uint16_t char_handle, const char *data, const char *data_type, bool is_subscribed)
 {
     if (!ble_connected) {
         ESP_LOGW(TAG, "Cannot send %s: no client connected", data_type);
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    if (!is_subscribed) {
+        ESP_LOGW(TAG, "Cannot send %s: client not subscribed to notifications", data_type);
         return ESP_ERR_INVALID_STATE;
     }
 
@@ -437,16 +471,17 @@ static esp_err_t ble_send_data(uint16_t char_handle, const char *data, const cha
 
     // Create mbuf for notification
     struct os_mbuf *om;
-    om = ble_hs_mbuf_from_flat(data, len);
+    om = ble_hs_mbuf_from_flat((const void *)data, len);
     if (!om) {
         ESP_LOGE(TAG, "Failed to allocate mbuf for %s", data_type);
         return ESP_ERR_NO_MEM;
     }
 
     // Send notification
-    int rc = ble_gattc_notify_custom(ble_conn_handle, char_handle, om);
+    int rc = ble_gatts_notify_custom(ble_conn_handle, char_handle, om);
     if (rc != 0) {
         ESP_LOGE(TAG, "Failed to send %s notification; rc=%d", data_type, rc);
+        // Don't free om here as ble_gatts_notify_custom takes ownership on success/failure
         return ESP_FAIL;
     }
 
@@ -456,32 +491,32 @@ static esp_err_t ble_send_data(uint16_t char_handle, const char *data, const cha
 
 esp_err_t ble_send_barcode(const char *barcode_data)
 {
-    return ble_send_data(upc_char_handle, barcode_data, "barcode");
+    return ble_send_data(upc_char_handle, barcode_data, "barcode", upc_notify_enabled);
 }
 
 esp_err_t ble_send_rfid(const char *rfid_data)
 {
-    return ble_send_data(rfid_char_handle, rfid_data, "RFID");
+    return ble_send_data(rfid_char_handle, rfid_data, "RFID", rfid_notify_enabled);
 }
 
 esp_err_t ble_send_payment_status(const char *payment_status)
 {
-    return ble_send_data(payment_char_handle, payment_status, "payment status");
+    return ble_send_data(payment_char_handle, payment_status, "payment status", payment_notify_enabled);
 }
 
 esp_err_t ble_send_produce_weight(const char *weight_data)
 {
-    return ble_send_data(produce_weight_char_handle, weight_data, "produce weight");
+    return ble_send_data(produce_weight_char_handle, weight_data, "produce weight", produce_weight_notify_enabled);
 }
 
 esp_err_t ble_send_item_verification(const char *weight_data)
 {
-    return ble_send_data(item_verification_char_handle, weight_data, "item verification");
+    return ble_send_data(item_verification_char_handle, weight_data, "item verification", item_verification_notify_enabled);
 }
 
 esp_err_t ble_send_misc_data(const char *misc_data)
 {
-    return ble_send_data(misc_char_handle, misc_data, "misc data");
+    return ble_send_data(misc_char_handle, misc_data, "misc data", misc_notify_enabled);
 }
 
 bool ble_is_connected(void)

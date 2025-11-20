@@ -73,8 +73,8 @@ void on_item_scan_complete(const item_rfid_tag_t *tags, int count) {
     ESP_LOGI(TAG, "Found %d items in cart", count);
 
     // Get cart weight
-    // float cart_weight = load_cell_display_pounds(cart_load_cell);
-    float cart_weight = load_cell_display_pounds(produce_load_cell);
+    float cart_weight = load_cell_display_pounds(cart_load_cell);
+    // float cart_weight = load_cell_display_pounds(produce_load_cell);
 
     // Build verification string: "weight,num_tags,tag1,tag2,tag3,..."
     char verification_msg[512] = {0};
@@ -227,12 +227,12 @@ static void handle_ble_command(const char *data, uint16_t len)
                 ESP_LOGI(TAG, "Starting cart tracking data logging");
 
                 // Start cart tracking session
-                // startSession();
+                startSession();
 
                 // Tare produce load cell
-                load_cell_tare(produce_load_cell);
+                load_cell_tare(cart_load_cell);
                 ESP_LOGI(TAG, "Load cell tared for tracking");
-                last_cart_weight = load_cell_display_pounds(produce_load_cell);
+                last_cart_weight = load_cell_display_pounds(cart_load_cell);
 
                 // Perform initial item scan
                 // item_rfid_scan(item_reader);
@@ -242,13 +242,13 @@ static void handle_ble_command(const char *data, uint16_t len)
                 ESP_LOGI(TAG, "Weight monitoring task created (threshold: %.4f lbs)", weight_change_threshold);
 
                 // Enable cart tracking
-                // cart_tracking_active = true;
+                cart_tracking_active = true;
             }
             else if(strcmp("CT_STOP", data) == 0) {
-                // ESP_LOGI(TAG, "Exporting cart tracking data log via BLE");
+                ESP_LOGI(TAG, "Exporting cart tracking data log via BLE");
 
                 // Disable cart tracking
-                // cart_tracking_active = false;
+                cart_tracking_active = false;
 
                 // Stop weight monitoring
                 if (weight_monitor_task_handle != NULL) {
@@ -258,13 +258,13 @@ static void handle_ble_command(const char *data, uint16_t len)
                 }
 
                 // End session and send log via BLE
-                // endSession(true);
+                endSession(true);
             }
             else if(strcmp("CT_CLEAR", data) == 0) {
-                // ESP_LOGI(TAG, "Clearing cart tracking data log");
+                ESP_LOGI(TAG, "Clearing cart tracking data log");
 
                 // Disable cart tracking
-                // cart_tracking_active = false;
+                cart_tracking_active = false;
 
                 // Stop weight monitoring
                 if (weight_monitor_task_handle != NULL) {
@@ -274,7 +274,7 @@ static void handle_ble_command(const char *data, uint16_t len)
                 }
 
                 // End session and remove file without sending
-                // endSession(false);
+                endSession(false);
             }
             break;
 
@@ -477,8 +477,8 @@ static void weight_monitor_task(void *arg)
     ESP_LOGI(TAG, "Weight monitoring task started (1 second interval)");
 
     while (1) {
-        // float current_weight = load_cell_display_pounds(cart_load_cell);
-        float current_weight = load_cell_display_pounds(produce_load_cell);
+        float current_weight = load_cell_display_pounds(cart_load_cell);
+        // float current_weight = load_cell_display_pounds(produce_load_cell);
 
         float weight_delta = fabs(current_weight - last_cart_weight);
 
@@ -524,10 +524,10 @@ static void setup(void)
     imu_setup();
     payment_setup();
     produce_loadcell_setup();
-    // cart_loadcell_setup();
-    item_rfid_setup();
+    cart_loadcell_setup();
+    // item_rfid_setup();
 
-    // cart_tracking_setup();
+    cart_tracking_setup();
 
     vTaskDelay(pdMS_TO_TICKS(100));
 
@@ -613,15 +613,15 @@ void app_main(void)
         }
 
         // Cart tracking RFID burst read (every 10 seconds, only when IMU is moving)
-        // if (cart_tracking_active) { // 
-        //     uint32_t current_time_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
-        //     uint32_t time_since_last_tracking = current_time_ms - last_cart_tracking_time_ms;
+        if (cart_tracking_active) { // 
+            uint32_t current_time_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
+            uint32_t time_since_last_tracking = current_time_ms - last_cart_tracking_time_ms;
 
-        //     if (time_since_last_tracking >= CART_TRACKING_INTERVAL_MS) {
-        //         BurstRead_CartTracking();
-        //         last_cart_tracking_time_ms = current_time_ms;
-        //     }
-        // }
+            if (time_since_last_tracking >= CART_TRACKING_INTERVAL_MS) {
+                BurstRead_CartTracking();
+                last_cart_tracking_time_ms = current_time_ms;
+            }
+        }
 
         // Payment processing
         if (payment_mode) {
