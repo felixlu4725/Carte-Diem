@@ -1,6 +1,3 @@
-# Markdown documentation files
-*.md
-
 # Build artifacts
 build/
 *.o
