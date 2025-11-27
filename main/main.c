@@ -729,7 +729,7 @@ static void weight_monitor_task(void *arg)
                     ESP_LOGI(TAG, "Item Verification is DISABLED - skipping item scan");
                 #endif
             }
-            
+
             last_cart_weight = current_weight;
         }
 
@@ -750,30 +750,17 @@ void debug_led(){
     };
 
     gpio_config(&debug_led_conf);
-    
     gpio_set_level(DEBUG_LED_PIN, 0); 
-    ESP_LOGI(TAG, "Debug LED initialized");
-    ESP_LOGI(TAG, "Testing GPIO 21 output...");
-    gpio_set_level(DEBUG_LED_PIN, 1);
-    ESP_LOGI(TAG, "Testing GPIO 21 output...");
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    ESP_LOGI(TAG, "Testing GPIO 21 output...");
-    gpio_set_level(DEBUG_LED_PIN, 0);
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    ESP_LOGI(TAG, "Testing GPIO 21 output...");
-    gpio_set_level(DEBUG_LED_PIN, 1);
-    ESP_LOGI(TAG, "Testing GPIO 21 output...");
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    ESP_LOGI(TAG, "Testing GPIO 21 output...");
-    gpio_set_level(DEBUG_LED_PIN, 0);
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    ESP_LOGI(TAG, "Testing GPIO 21 output...");
-    gpio_set_level(DEBUG_LED_PIN, 1);
-    ESP_LOGI(TAG, "Testing GPIO 21 output...");
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    ESP_LOGI(TAG, "Testing GPIO 21 output...");
-    gpio_set_level(DEBUG_LED_PIN, 0);
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    
+    for(int i = 0; i < 5; i++){
+        ESP_LOGI(TAG, "Testing GPIO 21 output... blink #%d", i);
+
+        gpio_set_level(DEBUG_LED_PIN, 1);
+        vTaskDelay(pdMS_TO_TICKS(1000));
+        gpio_set_level(DEBUG_LED_PIN, 0); 
+        vTaskDelay(pdMS_TO_TICKS(1000));
+
+    }
 
     return;
 }
