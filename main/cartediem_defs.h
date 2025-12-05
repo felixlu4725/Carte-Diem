@@ -3,7 +3,7 @@
 #pragma once
 
 // 1. ENABLE FUNCTIONALITIES: 1 to enable, 0 to disable
-#define ENABLE_LED_DEBUG_STARTUP 0
+#define ENABLE_LED_DEBUG_STARTUP 1
 #define ENABLE_ITEM_VERIFICATION 1
 #define ENABLE_CART_TRACKING 1
 #define ENABLE_WEIGHT_MONITORING 1
@@ -13,7 +13,7 @@
 
 #define PROXIMITY_THRESHOLD 30              // Proximity sensor threshold value
 #define IMU_IDLE_TIME_MINUTES 5             // 1 minutes
-#define IMU_MOVING_THRESHOLD 0.05f           // Threshold (in g) to consider IMU as moving
+#define IMU_MOVING_THRESHOLD 0.03f           // Threshold (in g) to consider IMU as moving
 
 #define IMU_MONITOR_INTERVAL_MS 5000        // 5 seconds
 #define IMU_TASK_PRIORITY 7
@@ -26,6 +26,15 @@
 
 #define IV_MAX_MOVING_THRESHOLD 0.2f        // Maximum IMU moving threshold to trigger item verification in response to weight change
 #define WEIGHT_CHANGE_THRESHOLD_LBS 0.01f    // Weight change threshold to trigger Item Verification
+
+// BLE Cart Tracking Transfer Configuration
+#define BLE_CT_CHUNK_SIZE           160  // Reduced from 240 for safety
+#define BLE_CT_INITIAL_DELAY_MS     10   // First few chunks: fast start
+#define BLE_CT_INITIAL_CHUNK_COUNT  5    // Number of chunks at initial delay
+#define BLE_CT_BULK_DELAY_MS        80   // Main data transfer delay
+#define BLE_CT_FINAL_DELAY_MS       150  // Last chunks before FILE_END
+#define BLE_CT_FILE_END_RETRY_MAX   3    // Maximum FILE_END retry attempts
+#define BLE_CT_FILE_END_RETRY_DELAY 200  // Delay between FILE_END retries (ms)
 
 // loadcell tare task priority
 #define TARE_TASK_PRIORITY 10

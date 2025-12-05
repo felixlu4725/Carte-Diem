@@ -256,7 +256,7 @@ static void handle_ble_command(const char *data, uint16_t len)
     }
 
     // Indoor mode commands
-    switch (data[0]) {
+    switch (data[0]) {        
         case 'T':  // "TARE_" commands
             if(strcmp("TARE_PRODUCE_WEIGHT", data) == 0 || strcmp("TARE_PROD_WEIGHT", data) == 0 || strcmp("T_PROD", data) == 0) {
                 ESP_LOGI(TAG, "BLE Command: Taring produce load cell");
@@ -292,6 +292,8 @@ static void handle_ble_command(const char *data, uint16_t len)
             break;
 
         case 'P':  // Payment module or Proximity sensor commands
+            ble_send_misc_data("[IMU] Moving");
+
             if(strcmp("PAY_START", data) == 0) {
                 ESP_LOGI(TAG, "BLE Command: Checking payment status - enabling payment module");
                 payment_mode = true;
@@ -381,10 +383,9 @@ static void handle_ble_command(const char *data, uint16_t len)
             break;
         
         case 'C': // Cart Tracking - txt file commands
-            if(strcmp("CT_START", data) == 0) {
-                
-                ble_send_misc_data("[IMU] Moving");
+            ble_send_misc_data("[IMU] Moving");
 
+            if(strcmp("CT_START", data) == 0) {
                 #if ENABLE_CART_TRACKING
                 ESP_LOGI(TAG, "Starting cart tracking data logging");
                 startSession();

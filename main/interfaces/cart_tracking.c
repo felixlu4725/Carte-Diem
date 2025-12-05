@@ -107,29 +107,57 @@ void endSession(bool sendBLE) {
                 }
                 vTaskDelay(pdMS_TO_TICKS(50));
 
-                // Send file data in chunks
-                uint8_t chunk[240];  // BLE MTU typically allows ~240 bytes per packet
+                // Send file data in chunks with progressive delays
+                uint8_t chunk[BLE_CT_CHUNK_SIZE + 1];
                 size_t bytes_read;
                 size_t total_sent = 0;
+                int chunk_count = 0;
 
-                while ((bytes_read = fread(chunk, 1, sizeof(chunk), f)) > 0) {
+                while ((bytes_read = fread(chunk, 1, BLE_CT_CHUNK_SIZE, f)) > 0) {
+                    chunk[bytes_read] = '\0';  // Null-terminate for BLE string send
+
                     ret = ble_send_cart_tracking((const char *)chunk);
                     if (ret != ESP_OK) {
-                        ESP_LOGW(TAG, "✗ Failed to send data chunk");
+                        ESP_LOGW(TAG, "✗ Failed to send data chunk %d", chunk_count + 1);
                         break;
                     }
+
+                    chunk_count++;
                     total_sent += bytes_read;
                     int percent = (total_sent * 100) / file_size;
                     ESP_LOGI(TAG, "Sent %d%%", percent);
-                    vTaskDelay(pdMS_TO_TICKS(20));  // Delay between chunks
+
+                    // Progressive delay to prevent mbuf pool exhaustion
+                    uint32_t chunk_delay;
+                    if (chunk_count <= BLE_CT_INITIAL_CHUNK_COUNT) {
+                        chunk_delay = BLE_CT_INITIAL_DELAY_MS;  // Fast start
+                    } else if (total_sent > (file_size * 90) / 100) {
+                        chunk_delay = BLE_CT_FINAL_DELAY_MS;  // Safety margin for FILE_END
+                    } else {
+                        chunk_delay = BLE_CT_BULK_DELAY_MS;  // Main transfer
+                    }
+                    vTaskDelay(pdMS_TO_TICKS(chunk_delay));
                 }
 
-                // Send FILE_END
-                ret = ble_send_cart_tracking("FILE_END");
-                if (ret == ESP_OK) {
-                    ESP_LOGI(TAG, "✓ Cart tracking log sent via BLE (%.1f KB)", file_size / 1024.0);
-                } else {
-                    ESP_LOGW(TAG, "✗ Failed to send FILE_END");
+                // Send FILE_END with retry logic (critical protocol marker)
+                uint8_t file_end_attempts = 0;
+                ret = ESP_FAIL;
+                while (file_end_attempts < BLE_CT_FILE_END_RETRY_MAX && ret != ESP_OK) {
+                    file_end_attempts++;
+                    ret = ble_send_cart_tracking("FILE_END");
+
+                    if (ret == ESP_OK) {
+                        ESP_LOGI(TAG, "✓ Cart tracking log sent via BLE (%.1f KB)", file_size / 1024.0);
+                        break;
+                    }
+
+                    if (file_end_attempts < BLE_CT_FILE_END_RETRY_MAX) {
+                        ESP_LOGW(TAG, "✗ FILE_END attempt %d/%d failed, retrying in %dms...",
+                                 file_end_attempts, BLE_CT_FILE_END_RETRY_MAX, BLE_CT_FILE_END_RETRY_DELAY);
+                        vTaskDelay(pdMS_TO_TICKS(BLE_CT_FILE_END_RETRY_DELAY));
+                    } else {
+                        ESP_LOGE(TAG, "✗ Failed to send FILE_END after %d attempts", file_end_attempts);
+                    }
                 }
                 vTaskDelay(pdMS_TO_TICKS(50));
             } else {
