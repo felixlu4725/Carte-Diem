@@ -1,4 +1,14 @@
-# Carte Diem Project
+# Carte Diem - System Integration
+
+This repository contains the integrated firmware for the Carte Diem smart shopping cart system. The code integrates all sensors and components (IMU, load cells, proximity sensors, RFID, BLE) and is designed to be flashed onto a custom PCB board powered by the ESP32-S3 microcontroller.
+
+For the PCB design files, see the [Carte Diem PCB KiCad Repository](https://github.com/cartediem/PCB-Design) 
+
+## Table of Contents
+- [Hardware Setup](#hardware-setup)
+- [Build and Configuration](#build-and-configuration)
+- [Configuration Settings](#configuration-settings)
+- [BLE Communication](#ble-communication)
 
 ## Hardware Setup
 
