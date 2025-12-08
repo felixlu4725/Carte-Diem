@@ -1,0 +1,23 @@
+idf_component_register(
+    SRCS
+        "main.c"
+        "interfaces/barcode.c"
+        "interfaces/proximity_sensor.c"
+        "interfaces/mfrc522.c"
+        "interfaces/ble_barcode_nimble.c"
+        "interfaces/loadcells.c"
+        "interfaces/item_rfid.c"
+        "interfaces/imu.c"
+        "interfaces/cart_tracking.c"
+    INCLUDE_DIRS
+        "."
+        "interfaces"
+    REQUIRES
+        driver
+        esp_timer
+        nvs_flash
+        bt
+        spiffs
+    PRIV_REQUIRES
+        esp_adc
+)
