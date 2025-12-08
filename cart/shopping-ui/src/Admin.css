@@ -1,0 +1,350 @@
+/* Admin Mode Banner */
+.admin-banner {
+  background-color: #fff3cd;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Admin Panel */
+.admin-panel {
+  background-color: #f8f9fa;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 2px solid #dee2e6;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+.admin-panel h2 {
+  margin-top: 0;
+}
+
+/* Admin Tabs */
+.admin-main-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.admin-main-tab {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+}
+
+.admin-main-tab:hover {
+  background-color: #e9ecef;
+}
+
+.admin-main-tab.active {
+  border-bottom-color: #0d6efd;
+  font-weight: bold;
+  color: #0d6efd;
+}
+
+/* Wizard Progress */
+.wizard-progress {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.wizard-progress::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #dee2e6;
+  z-index: 0;
+}
+
+.wizard-step {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.wizard-step::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #dee2e6;
+  margin: 0 auto 10px;
+  line-height: 40px;
+}
+
+.wizard-step.active::before {
+  background-color: #0d6efd;
+}
+
+.wizard-step.completed::before {
+  background-color: #28a745;
+}
+
+/* Products Database Table */
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.products-table thead tr {
+  background-color: #e9ecef;
+}
+
+.products-table th,
+.products-table td {
+  padding: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.products-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Image Container with Preview */
+.img-container {
+  position: relative;
+  display: inline-block;
+}
+
+.img-container .img-preview {
+  display: none;
+  position: absolute;
+  top: -50px;
+  right: 70px;
+  z-index: 10;  
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.img-container:hover .img-preview {
+  display: block;
+}
+
+/* Edit Form */
+.edit-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.edit-form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-form-field label {
+  font-size: 12px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.edit-form-field input {
+  padding: 8px;
+  font-size: 14px;
+  width: 100%;
+}
+
+.edit-form-field.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Category Tags */
+.category-list {
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #e9ecef;
+  border-radius: 3px;
+  margin-bottom: 5px;
+}
+
+.category-remove-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+/* Image Fields */
+.image-field-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.image-field-row input {
+  padding: 8px;
+  font-size: 14px;
+}
+
+.image-size-input {
+  flex: 0 0 200px;
+}
+
+.image-url-input {
+  flex: 1;
+}
+
+.image-remove-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 8px 15px;
+  cursor: pointer;
+}
+
+/* Query Result Box */
+.query-result {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid #dee2e6;
+  margin-top: 20px;
+}
+
+.query-result h4 {
+  margin-top: 0;
+}
+
+.query-result pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+/* Modal Styles for Admin */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h2,
+.modal h3 {
+  margin-top: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Buttons for Admin */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  min-width: 100px;
+  color: #fff;
+  background-color: #2c3e50;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  background-color: #1a242f;
+  opacity: 0.8;
+}
+
+.btn.cancel-btn {
+  background-color: #6c757d;
+}
+
+/* Form Inputs */
+input[type="text"],
+input[type="number"],
+input[type="password"],
+textarea {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding: 8px;
+  font-size: 14px;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .edit-form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .wizard-progress {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .wizard-progress::before {
+    display: none;
+  }
+  
+  .modal {
+    padding: 20px;
+    max-width: 95%;
+  }
+  
+  .admin-main-tabs {
+    flex-wrap: wrap;
+  }
+}

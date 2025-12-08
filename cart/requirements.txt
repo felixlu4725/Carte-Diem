@@ -1,0 +1,13 @@
+flask
+flask-cors
+flask-socketio
+requests
+python-socketio
+squareup
+qrcode
+bleak
+aiohttp
+pyserial
+timezonefinder
+pytz
+pynmea2

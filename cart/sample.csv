@@ -1,0 +1,11 @@
+UPC,Brand,Description,Qty,Price,Weight,Produce,Aisle,Section,Side,AisleDescription,Categories,ImageSize,ImageURL,RFIDTags
+0001234567890,Dole,Fresh Bananas,150,0.59,6,1,A1,1,Left,Fresh Produce - Tropical Fruits,"Fruit,Fresh,Organic",medium,https://images.unsplash.com/photo-1603833665858-e61d17a86224?w=400,849302175614
+0001234567890,Dole,Fresh Bananas,150,0.59,6,1,A1,1,Left,Fresh Produce - Tropical Fruits,"Fruit,Fresh,Organic",large,https://images.unsplash.com/photo-1603833665858-e61d17a86224?w=800,521478306192
+0009876543210,Gala,Red Apples,200,1.29,8,1,A1,2,Left,Fresh Produce - Apples,"Fruit,Fresh",medium,https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400,392184075621
+0005555555555,General Mills,Cheerios Cereal,45,4.99,12,0,B5,3,Right,Breakfast & Cereal Aisle,"Cereal,Breakfast,Grain",large,https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400,718430295614
+0007777777777,Pepsi Co,Pepsi 2L Bottle,80,2.49,67.6,0,C3,5,Left,Beverages - Soft Drinks,"Beverage,Soda,Drinks",medium,https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=400,605198374210
+0008888888888,Lay's,Classic Potato Chips,100,3.99,10,0,D2,4,Right,Snacks & Chips,"Snacks,Chips,Savory",small,https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400,492718605139
+0002222222222,Horizon,Organic Whole Milk,60,4.79,64,0,E1,1,Left,Dairy - Refrigerated,"Dairy,Milk,Organic",medium,https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400,830492617508
+0003333333333,Wonder,White Bread Loaf,75,2.89,20,0,F4,2,Right,Bakery & Bread,"Bakery,Bread,Staples",medium,https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400,NONE
+0004444444444,Häagen-Dazs,Vanilla Ice Cream,40,5.99,14,0,E5,6,Right,Frozen - Ice Cream,"Frozen,Dessert,Ice Cream",large,https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400,903472615028
+0006666666666,Nature Valley,Granola Bars,90,4.49,8.9,0,B6,4,Left,Snacks & Granola Bars,"Snacks,Healthy,Bars,Breakfast",small,https://images.unsplash.com/photo-1606312619070-d48b4cbc2d52?w=400,128395047162
