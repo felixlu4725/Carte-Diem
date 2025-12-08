@@ -1,6 +1,6 @@
-# Smart Shopping Cart System (Carte Diem)
+Cart Interface
 
-This repository contains the backend logic for a Smart Shopping Cart system. The system consists of two primary components: a **Master Server** (Central Inventory/Management) and a **Cart Operation Node** (The physical cart logic).
+This repository contains the backend logic for a cart interface system. The system consists of two primary components: a **Master Server** (Central Inventory/Management) and a **Cart Operation Node** (The physical cart logic).
 
 ## Project Structure
 
