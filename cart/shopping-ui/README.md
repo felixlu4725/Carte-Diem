@@ -1,70 +1,186 @@
-# Getting Started with Create React App
+# Smart Shopping Cart System (Carte Diem)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repository contains the backend logic for a Smart Shopping Cart system. The system consists of two primary components: a **Master Server** (Central Inventory/Management) and a **Cart Operation Node** (The physical cart logic).
 
-## Available Scripts
+## Project Structure
 
-In the project directory, you can run:
+* **`master.py`**: The central Flask server that manages the product database, inventory levels, and serves as the source of truth for all carts in the store.
+* **`cart_ops.py`**: The client-side logic running on the physical shopping cart (e.g., Raspberry Pi). It handles hardware integration (BLE sensors, GPS), cart session management, and payment processing.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Component 1: Master Server (`master.py`)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The Master Server acts as the centralized database and API for the store.
 
-### `npm test`
+### Features
+* **Product Database**: Stores UPCs, prices, weights, descriptions, and RFID tags via SQLite (`products.db`).
+* **Inventory Management**: Updates stock levels in real-time as carts add items.
+* **Data Import**: Supports importing product catalogs via CSV.
+* **Frontend Hosting**: Capable of spawning React/Electron UI processes (currently commented out).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### API Endpoints
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/lookup_product` | Returns product details + verification requirements for a specific UPC. |
+| `POST` | `/lookup_rfid` | Returns product details associated with a list of RFID tags. |
+| `POST` | `/update_stock` | Decrements or increments inventory quantity. |
+| `POST` | `/add_complete_product` | Adds or updates a product (including images, aisle location, etc.). |
+| `POST` | `/import_csv` | Bulk import products from CSV text. |
+| `POST` | `/execute_sql` | Direct SQL execution for database maintenance. |
 
-### `npm run build`
+### Setup & Run
+1.  Install dependencies:
+    ```bash
+    pip install flask flask_cors flask_socketio
+    ```
+2.  Run the server:
+    ```bash
+    python master.py
+    ```
+    * *Default Host:* `0.0.0.0`
+    * *Default Port:* `80`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Component 2: Cart Operations (`cart_ops.py`)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This script controls the physical shopping cart hardware and logic. It is designed to run in two modes: as a background daemon (handling BLE/GPS) and as a CLI utility called by a UI (likely Electron) to perform specific actions.
 
-### `npm run eject`
+### Features
+* **BLE Integration**: Connects to a peripheral device (ESP32/Arduino) to receive:
+    * Barcode scans (UPC).
+    * Load cell data (Produce weight).
+    * RFID tags (Anti-theft/Verification).
+    * IMU data (Activity detection).
+* **Security & Geofencing**: Uses GPS (NMEA) to detect if the cart leaves a defined boundary polygon (`boundary.json`). Triggers audio alarms if theft is detected.
+* **Smart Weight Verification**: Compares the expected weight of items in the cart DB against real-time scale measurements to prevent theft.
+* **Payments**: Distinct integration with **Square API** for generating checkout links and polling payment status.
+* **Receipts**: Sends email receipts via SMTP.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Hardware Dependencies
+* **BLE Device**: Expects a device named `"Carte_Diem"` (Address configurable in code).
+* **GPS Module**: Expects NMEA stream on `/dev/serial0` at 9600 baud.
+* **Audio**: Uses `mpg123` (Linux) or `afplay` (macOS) for alarms.
+* **Monitor**: Uses `ddcutil` to adjust screen brightness based on activity.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Setup & Configuration
+1.  Install dependencies:
+    ```bash
+    pip install requests squareup bleak aiohttp pyserial timezonefinder pytz pynmea2
+    ```
+2.  **Database**: Ensure `cart.db` and `setting.db` are initialized.
+3.  **API Keys**:
+    * Update `SQUARE_ACCESS_TOKEN` in `cart_ops.py` with your Square Sandbox/Production token.
+    * Update SMTP credentials in `send_receipt` function.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Usage
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**1. Daemon Mode (BLE & GPS Listener)**
+Running the script without arguments starts the async BLE listener and GPS threads.
+```bash
+python cart_ops.py
+```
 
-## Learn More
+## Database Schemas
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+This document outlines the SQLite database structures used in the Smart Shopping Cart system.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 1. Master Database (`products.db`)
+**Location:** Master Server  
+**Managed by:** `master.py`  
+**Purpose:** Stores the central inventory, product details, images, and categorization. It serves as the source of truth for all carts.
 
-### Code Splitting
+### `Products`
+The core inventory table.
+```sql
+CREATE TABLE IF NOT EXISTS "Products" (
+    upc TEXT PRIMARY KEY,
+    brand TEXT,
+    description TEXT,
+    qty INTEGER,
+    price REAL,
+    weight REAL,
+    produce INTEGER
+);
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+CREATE TABLE AisleLocations (
+    upc TEXT PRIMARY KEY,
+    aisle TEXT,
+    section TEXT,
+    side TEXT,
+    description TEXT,
+    FOREIGN KEY (upc) REFERENCES Products(upc) ON DELETE CASCADE
+);
 
-### Analyzing the Bundle Size
+CREATE TABLE Categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE
+);
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+CREATE TABLE ProductCategories (
+    upc TEXT,
+    category_id INTEGER,
+    PRIMARY KEY (upc, category_id),
+    FOREIGN KEY (upc) REFERENCES Products(upc) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES Categories(id) ON DELETE CASCADE
+);
 
-### Making a Progressive Web App
+CREATE TABLE Images (
+    upc TEXT,
+    size TEXT,
+    url TEXT,
+    PRIMARY KEY (upc, size),
+    FOREIGN KEY (upc) REFERENCES Products(upc) ON DELETE CASCADE
+);
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+CREATE TABLE ProductRFIDs (
+    upc TEXT NOT NULL,
+    rfid_id TEXT,
+    PRIMARY KEY (upc, rfid_id),
+    FOREIGN KEY (upc) REFERENCES Products(upc) ON DELETE CASCADE
+);
 
-### Advanced Configuration
+CREATE TABLE restricted_items (
+    upc TEXT PRIMARY KEY,
+    description TEXT
+);
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 2. Cart Database (`cart.db`)
+**Location:** Client  
+**Managed by:** `cart_ops.py`  
+**Purpose:** Stores the items in the cart with qty, weight, and prices for frontend.
 
-### Deployment
+### `Cart`
+The cart table.
+```sql
+CREATE TABLE cart (
+        upc TEXT PRIMARY KEY,
+        description TEXT NOT NULL,
+        price REAL NOT NULL,
+        qty INTEGER NOT NULL,
+        subtotal REAL NOT NULL,
+        weight REAL NOT NULL, 
+        requires_verification INTEGER DEFAULT 0,
+        resolved INTEGER DEFAULT 0,
+        produce INTEGER DEFAULT 0);
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 2. Cart Database (`setting.db`)
+**Location:** Client  
+**Managed by:** `cart_ops.py`  
+**Purpose:** Stores the address and port to connect to the stores and Carte Diem servers to reach endpoints.
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### `Settings`
+The settings table.
+```sql
+CREATE TABLE setting (
+    id INTEGER PRIMARY KEY,
+    master_ip TEXT,
+    master_port TEXT,
+    company_ip TEXT,
+    company_port TEXT,
+    setup_complete INTEGER DEFAULT 0,
+    hardware_id TEXT);
+```
