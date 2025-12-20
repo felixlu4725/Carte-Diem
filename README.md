@@ -11,7 +11,7 @@ Carte Diem is a add-on module that integrates smart features to regular carts. T
 ### README Directories
 - [PCB](PCB/README.md) — schematics, layout, and power architecture  
 - [CAD](CAD/README.md) — mechanical enclosures and mounting hardware
-- [cart](cart/README.md) - UI interfacing
+- [cart](cart/README.md) - UI interfacing and backend servers
 - [Integration](integration/README.md) — ESP32 ↔ Raspberry Pi integration and BLE communication
 
 
