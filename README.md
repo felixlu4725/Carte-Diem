@@ -10,6 +10,11 @@ Carte Diem is a add-on module that integrates smart features to regular carts. T
   <img src="https://github.com/user-attachments/assets/bc05971d-ae6c-4cf4-bc1e-f0703657ef8f" alt="Expo Poster" width=100%>
 </p>
 
+### Directories
+- [PCB](PCB/README.md) — schematics, layout, power architecture
+- [CAD](CAD/) — mechanical enclosures and mounts
+
+
 ## Motivation
 
 Despite the widespread adoption of self-checkout, grocery stores still experience congestion, long wait times, and loss-prevention challenges. Existing smart cart solutions address these issues but come at a cost of **$5,000–$10,000 per cart**, making large-scale deployment unrealistic for most retailers.
