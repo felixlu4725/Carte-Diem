@@ -145,7 +145,7 @@ The system is designed to operate **15+ hours continuously**, matching a full da
 - Power system met full-day operation targets under worst-case load conditions
 
 
-## Photo DUmp
+## Photo Dump
 
 <img width="1822" height="1338" alt="image" src="https://github.com/user-attachments/assets/f71f9208-e67b-4d02-afa3-90d6a1f191f6" />
 <img width="992" height="964" alt="image" src="https://github.com/user-attachments/assets/41e1424a-cdfa-4568-9db4-701c8a62e445" />
