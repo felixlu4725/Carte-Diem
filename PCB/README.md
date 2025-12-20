@@ -17,6 +17,9 @@ It was designed to support **all-day operation**, modular peripherals, and relia
 
 ---
 
+## Manufractured PCB
+<img width="1530" height="1170" alt="image" src="https://github.com/user-attachments/assets/24c9dbca-9fd7-4139-91af-da6a9b2d392d" />
+
 ## Key Features
 
 - **ESP32-S3 MCU**
@@ -48,20 +51,17 @@ It was designed to support **all-day operation**, modular peripherals, and relia
 
 ---
 
-# Schematic
+## Schematic
 
-## Top level
+### Top level
 <img width="1690" height="1164" alt="image" src="https://github.com/user-attachments/assets/4e64fee1-0b7b-4faf-97c8-b5374a5cf20d" />
 
-## Power Distribution
+### Power Distribution
 <img width="1406" height="1012" alt="image" src="https://github.com/user-attachments/assets/5f9b87c8-65d6-46be-9d68-4d278105c485" />
 
-## Integrated IMU
+### Integrated IMU
 <img width="1438" height="920" alt="image" src="https://github.com/user-attachments/assets/bc37799c-04d9-4257-b06d-57b09b55f8de" />
 
-# Routing
+### Routing
 <img width="1236" height="1500" alt="image" src="https://github.com/user-attachments/assets/7bd44487-73fc-40cb-bd26-254487c2384b" />
 
-
-# Manufractured PCB
-<img width="1530" height="1170" alt="image" src="https://github.com/user-attachments/assets/24c9dbca-9fd7-4139-91af-da6a9b2d392d" />
