@@ -120,9 +120,9 @@ The system is designed to operate **15+ hours continuously**, matching a full da
 
 ```text
 .
-├── firmware/        # ESP32-S3 firmware (FreeRTOS, drivers, BLE)
-├── hardware/        # Schematics, PCB layouts, CAD, BOM
-├── rpi/             # Raspberry Pi UI and integration code
-├── backend/         # Server, database, analytics, visualization
-├── docs/            # Design documentation and diagrams
+├── CAD/               # Mechanical CAD files for enclosures and mounts
+├── PCB/               # Schematics, PCB layouts, and fabrication files
+├── cart/              # On-cart UI (Raspberry Pi touchscreen interface)
+├── integration/       # ESP32 ↔ Raspberry Pi integration and BLE logic
+├── LICENSE            # GPL-3.0 license
 └── README.md
