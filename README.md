@@ -9,3 +9,120 @@ Carte Diem is a add-on module that integrates smart features to regular carts. T
 <p align="center">
   <img src="https://github.com/user-attachments/assets/bc05971d-ae6c-4cf4-bc1e-f0703657ef8f" alt="Expo Poster" width=100%>
 </p>
+
+## Motivation
+
+Despite the widespread adoption of self-checkout, grocery stores still experience congestion, long wait times, and loss-prevention challenges. Existing smart cart solutions address these issues but come at a cost of **$5,000–$10,000 per cart**, making large-scale deployment unrealistic for most retailers.
+
+Carte Diem explores a different design space:
+- Retrofit instead of full cart replacement  
+- Sensor fusion instead of single-modality detection  
+- Real-time embedded verification instead of post-hoc auditing  
+
+The goal is to eliminate checkout lines entirely while maintaining store-side trust, scalability, and cost efficiency.
+
+---
+
+## System Overview
+
+Carte Diem consists of two tightly coupled subsystems:
+
+### On-Cart Embedded System
+- **Custom ESP32-S3 PCB** running FreeRTOS
+- Interfaces with all sensors and peripherals
+- Performs real-time sensing, verification, and event generation
+- Communicates with the Raspberry Pi via BLE
+
+### On-Cart Compute + Backend
+- **Raspberry Pi 4** provides UI, networking, and payment flow
+- Connects to store and Carte Diem servers over WiFi
+- Handles inventory queries, checkout confirmation, and analytics upload
+
+---
+
+## Key Features
+
+### Item Detection & Verification
+- **Barcode Scanning**
+  - Primary item identification method
+  - Button- or proximity-triggered
+  - Fast and reliable for most items
+
+- **RFID Item Verification**
+  - Detects tagged items (e.g., alcohol, high-value goods)
+  - Automatically cross-checks cart contents
+  - Flags unscanned additions in real time
+
+- **Weight-Based Verification**
+  - Four load cells under the cart basket
+  - Cross-checks expected vs. measured weight
+  - Detects unscanned add/remove events
+  - Freezes checkout when inconsistencies are detected
+
+- **Produce Scale**
+  - Dedicated top-mounted scale
+  - Computes price dynamically based on weight
+
+### Checkout & Security
+- **Checkout & Payment**
+  - Simulated RFID tap-to-pay
+  - QR-code payment flow (Square API)
+  - Digital receipt generation
+
+- **GPS-Based Security**
+  - Store-defined cart boundaries
+  - Alarm triggered if cart exits allowed area
+
+### Analytics & Store Insights
+- **Cart Tracking**
+  - RFID-based indoor tracking (no computer vision)
+  - Generates cart paths and heatmaps
+  - Aggregates multi-session shopping behavior
+
+---
+
+## Hardware Architecture
+
+- Custom **ESP32-S3 PCB**
+  - UART: barcode scanner, RFID modules
+  - SPI: payment RFID
+  - I²C: IMU, proximity sensor
+  - ADC + GPIO: load cells
+  - BLE: ESP32 ↔ Raspberry Pi
+- Raspberry Pi 4 with touchscreen display
+- Dedicated **12 V LiFePO₄ battery**
+- Multi-rail power system (12 V, 9 V, 5 V, 3.3 V, 1.8 V)
+- 3D-printed enclosures designed for durability and weather resistance
+
+The system is designed to operate **15+ hours continuously**, matching a full day of store operation.
+
+---
+
+## Software Architecture
+
+- **FreeRTOS-based firmware**
+  - Periodic tasks for sensing and monitoring
+  - Event-driven verification triggered by weight changes
+  - ISR-to-task deferral for responsiveness and power efficiency
+
+- **BLE Communication Protocol**
+  - Structured commands for barcode scans, weight readings, RFID bursts, and cart tracking logs
+
+- **Full-Stack Web Backend**
+  - Store database and inventory management
+  - Cart registration and session tracking
+  - Heatmap and path visualization
+  - GPS boundary configuration interface
+
+---
+
+## Repository Structure
+
+```text
+.
+├── firmware/        # ESP32-S3 firmware (FreeRTOS, drivers, BLE)
+├── hardware/        # Schematics, PCB layouts, CAD, BOM
+├── rpi/             # Raspberry Pi UI and integration code
+├── backend/         # Server, database, analytics, visualization
+├── docs/            # Design documentation and diagrams
+└── README.md
