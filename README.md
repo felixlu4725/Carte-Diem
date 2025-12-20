@@ -126,3 +126,18 @@ The system is designed to operate **15+ hours continuously**, matching a full da
 ├── integration/       # ESP32 ↔ Raspberry Pi integration and BLE logic
 ├── LICENSE            # GPL-3.0 license
 └── README.md
+
+```
+
+## Results
+
+- Fully functional prototype demonstrated at the EECS Design Expo
+- Reliable real-time detection of item add/remove events using sensor fusion
+- Weight-based verification successfully detected unscanned items
+- RFID-based cart tracking enabled path reconstruction and heatmap generation
+- End-to-end checkout flow validated, including UI, payment simulation, and receipt generation
+- Power system met full-day operation targets under worst-case load conditions
+
+
+
+
