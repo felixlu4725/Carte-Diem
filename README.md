@@ -3,6 +3,7 @@
 {abevega, avachang, felixlu, jinws, donatali, tinma}@umich.edu
 
 EECS 473 F25
+<img width="2156" height="810" alt="image" src="https://github.com/user-attachments/assets/0e1dd9b7-a1c1-4b7c-a96f-a4c96f1b2ce2" />
 
 Carte Diem is a add-on module that integrates smart features to regular carts. This device eliminates the need for checkout lines while maintaining anti-theft features. It’s modularity allows stores to easily implement this technology into the existing ecosystems.
 
@@ -30,6 +31,7 @@ The goal is to eliminate checkout lines entirely while maintaining store-side tr
 ---
 
 ## System Overview
+<img width="1598" height="1188" alt="image" src="https://github.com/user-attachments/assets/6df3e5d9-ef62-4fb4-8332-7658c5c7a2cd" />
 
 Carte Diem consists of two tightly coupled subsystems:
 
