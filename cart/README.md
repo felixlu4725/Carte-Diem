@@ -12,6 +12,7 @@ This repository contains the backend logic for a cart interface system. The syst
 ## Component 1: Master Server (`master.py`)
 
 The Master Server acts as the centralized database and API for the store.
+<img width="1416" height="1012" alt="image" src="https://github.com/user-attachments/assets/08480100-aabd-4342-8d59-ebf591e3e203" />
 
 ### Features
 * **Product Database**: Stores UPCs, prices, weights, descriptions, and RFID tags via SQLite (`products.db`).
@@ -46,6 +47,8 @@ The Master Server acts as the centralized database and API for the store.
 ## Component 2: Cart Operations (`cart_ops.py`)
 
 This script controls the physical shopping cart hardware and logic. It is designed to run in two modes: as a background daemon (handling BLE/GPS) and as a CLI utility called by a UI (likely Electron) to perform specific actions.
+<img width="1740" height="720" alt="image" src="https://github.com/user-attachments/assets/77455a2d-1542-4e5b-8812-2b72e5f2eb26" />
+
 
 ### Features
 * **BLE Integration**: Connects to a peripheral device (ESP32/Arduino) to receive:
