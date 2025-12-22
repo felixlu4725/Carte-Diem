@@ -1,0 +1,158 @@
+.data-tab-container {
+  padding: 1rem;
+}
+
+.data-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.date-selection {
+  margin-bottom: 1rem;
+}
+
+.selected-dates {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.date-chip {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.remove-date {
+  background: transparent;
+  border: none;
+  color: #0369a1;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.25rem;
+  line-height: 1;
+}
+
+.remove-date:hover {
+  color: #be123c;
+}
+
+.session-table-container {
+  margin-top: 1rem;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.session-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.session-table th,
+.session-table td {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.session-checkbox {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.combine-container {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.combine-button {
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.combine-button:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.error {
+  color: red;
+}
+
+.combined-images {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+}
+
+.combined-images h3 {
+  margin-bottom: 10px;
+}
+
+.combined-images-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  justify-items: center;
+}
+
+.combined-image img {
+  width: 100%;
+  max-width: 400px;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: transform 0.2s;
+}
+
+.combined-image img:hover {
+  transform: scale(1.05);
+}
+
+.combined-image a {
+  display: block;
+  margin-top: 6px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.combined-image a:hover {
+  text-decoration: underline;
+}
+
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.image-modal img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 8px;
+  border: 2px solid #fff;
+}

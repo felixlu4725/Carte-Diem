@@ -1,0 +1,411 @@
+===== TAG BURST =====
+Tag: E2801170000002076A508C74 | RSSI: 65 dBm | Antennna: 2 | Time: 1709943 ms
+Tag: E2801170000002076A508D76 | RSSI: 63 dBm | Antennna: 2 | Time: 1709966 ms
+Tag: E2801170000002076A508D78 | RSSI: 67 dBm | Antennna: 2 | Time: 1709966 ms
+Tag: E2801170000002076A508C74 | RSSI: 62 dBm | Antennna: 2 | Time: 1709984 ms
+Tag: E2801170000002076A508D78 | RSSI: 66 dBm | Antennna: 2 | Time: 1709984 ms
+Tag: E2801170000002076A508D76 | RSSI: 62 dBm | Antennna: 2 | Time: 1709997 ms
+Tag: E2801170000002076A508D78 | RSSI: 64 dBm | Antennna: 2 | Time: 1710020 ms
+Tag: E2801170000002076A508C74 | RSSI: 63 dBm | Antennna: 2 | Time: 1710020 ms
+Tag: E2801170000002076A508D76 | RSSI: 63 dBm | Antennna: 2 | Time: 1710038 ms
+Tag: E2801170000002076A508C74 | RSSI: 62 dBm | Antennna: 2 | Time: 1710038 ms
+Tags scanned: 10
+=====================
+
+I (1376) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508C74 | RSSI: 69 dBm | Antennna: 1 | Time: 1710951 ms
+Tag: E2801170000002076A508D76 | RSSI: 64 dBm | Antennna: 1 | Time: 1711018 ms
+Tag: E2801170000002076A508D78 | RSSI: 70 dBm | Antennna: 1 | Time: 1711019 ms
+Tag: E2801170000002076A508C74 | RSSI: 71 dBm | Antennna: 2 | Time: 1711100 ms
+Tag: E2801170000002076A508D78 | RSSI: 74 dBm | Antennna: 2 | Time: 1711100 ms
+Tag: E2801170000002076A508D76 | RSSI: 64 dBm | Antennna: 2 | Time: 1711136 ms
+Tag: E2801170000002076A508C74 | RSSI: 70 dBm | Antennna: 2 | Time: 1711136 ms
+Tag: E2801170000002076A508D76 | RSSI: 62 dBm | Antennna: 2 | Time: 1711154 ms
+Tag: E2801170000002076A508D78 | RSSI: 71 dBm | Antennna: 2 | Time: 1711154 ms
+Tag: E2801170000002076A508D78 | RSSI: 69 dBm | Antennna: 2 | Time: 1711172 ms
+Tags scanned: 10
+=====================
+
+I (2466) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508D78 | RSSI: 77 dBm | Antennna: 1 | Time: 1712036 ms
+Tag: E2801170000002076A508D76 | RSSI: 67 dBm | Antennna: 1 | Time: 1712108 ms
+Tag: E2801170000002076A508D76 | RSSI: 66 dBm | Antennna: 1 | Time: 1712109 ms
+Tag: E2801170000002076A508C74 | RSSI: 69 dBm | Antennna: 1 | Time: 1712110 ms
+Tag: E2801170000002076A508D76 | RSSI: 61 dBm | Antennna: 1 | Time: 1712110 ms
+Tag: E2801170000002076A508C74 | RSSI: 62 dBm | Antennna: 1 | Time: 1712111 ms
+Tag: E2801170000002076A508C74 | RSSI: 62 dBm | Antennna: 1 | Time: 1712112 ms
+Tag: E2801170000002076A508D76 | RSSI: 62 dBm | Antennna: 1 | Time: 1712113 ms
+Tag: E2801170000002076A508D76 | RSSI: 62 dBm | Antennna: 1 | Time: 1712126 ms
+Tag: E2801170000002076A508C74 | RSSI: 65 dBm | Antennna: 1 | Time: 1712126 ms
+Tags scanned: 10
+=====================
+
+I (3536) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508D76 | RSSI: 61 dBm | Antennna: 4 | Time: 1713111 ms
+Tag: E2801170000002076A508C74 | RSSI: 60 dBm | Antennna: 4 | Time: 1713178 ms
+Tag: E2801170000002076A508D76 | RSSI: 63 dBm | Antennna: 4 | Time: 1713179 ms
+Tag: E2801170000002076A508D78 | RSSI: 61 dBm | Antennna: 4 | Time: 1713180 ms
+Tag: E2801170000002076A508D78 | RSSI: 77 dBm | Antennna: 1 | Time: 1713255 ms
+Tag: E2801170000002076A508C74 | RSSI: 70 dBm | Antennna: 1 | Time: 1713273 ms
+Tag: E2801170000002076A508D76 | RSSI: 63 dBm | Antennna: 1 | Time: 1713296 ms
+Tag: E2801170000002076A508C74 | RSSI: 70 dBm | Antennna: 1 | Time: 1713296 ms
+Tag: E2801170000002076A508C74 | RSSI: 63 dBm | Antennna: 1 | Time: 1713314 ms
+Tag: E2801170000002076A508D76 | RSSI: 62 dBm | Antennna: 1 | Time: 1713314 ms
+Tags scanned: 10
+=====================
+
+I (4616) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508C74 | RSSI: 67 dBm | Antennna: 4 | Time: 1714191 ms
+Tag: E2801170000002076A508D76 | RSSI: 65 dBm | Antennna: 4 | Time: 1714258 ms
+Tag: E2801170000002076A508D76 | RSSI: 65 dBm | Antennna: 4 | Time: 1714259 ms
+Tag: E2801170000002076A508C74 | RSSI: 67 dBm | Antennna: 4 | Time: 1714260 ms
+Tag: E2801170000002076A508D78 | RSSI: 66 dBm | Antennna: 4 | Time: 1714260 ms
+Tag: E2801170000002076A508D76 | RSSI: 66 dBm | Antennna: 4 | Time: 1714261 ms
+Tag: E2801170000002076A508C74 | RSSI: 63 dBm | Antennna: 4 | Time: 1714263 ms
+Tag: E2801170000002076A508D78 | RSSI: 62 dBm | Antennna: 4 | Time: 1714286 ms
+Tag: E2801170000002076A508D76 | RSSI: 65 dBm | Antennna: 4 | Time: 1714286 ms
+Tag: E2801170000002076A508D76 | RSSI: 64 dBm | Antennna: 4 | Time: 1714304 ms
+Tags scanned: 10
+=====================
+
+I (5696) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508D76 | RSSI: 63 dBm | Antennna: 3 | Time: 1715271 ms
+Tag: E2801170000002076A508C74 | RSSI: 71 dBm | Antennna: 4 | Time: 1715399 ms
+Tag: E2801170000002076A508D76 | RSSI: 63 dBm | Antennna: 4 | Time: 1715415 ms
+Tag: E2801170000002076A508D76 | RSSI: 67 dBm | Antennna: 4 | Time: 1715433 ms
+Tag: E2801170000002076A508C74 | RSSI: 69 dBm | Antennna: 4 | Time: 1715456 ms
+Tag: E2801170000002076A508D78 | RSSI: 67 dBm | Antennna: 4 | Time: 1715456 ms
+Tag: E2801170000002076A508D76 | RSSI: 66 dBm | Antennna: 4 | Time: 1715469 ms
+Tag: E2801170000002076A508C74 | RSSI: 64 dBm | Antennna: 4 | Time: 1715492 ms
+Tag: E2801170000002076A508D76 | RSSI: 66 dBm | Antennna: 4 | Time: 1715492 ms
+Tag: E2801170000002076A508D78 | RSSI: 67 dBm | Antennna: 4 | Time: 1715496 ms
+Tags scanned: 10
+=====================
+
+I (6836) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508D76 | RSSI: 60 dBm | Antennna: 3 | Time: 1716410 ms
+Tag: E2801170000002076A508D78 | RSSI: 63 dBm | Antennna: 3 | Time: 1716478 ms
+Tag: E2801170000002076A508D76 | RSSI: 60 dBm | Antennna: 3 | Time: 1716479 ms
+Tag: E2801170000002076A508D78 | RSSI: 65 dBm | Antennna: 3 | Time: 1716480 ms
+Tag: E2801170000002076A508C74 | RSSI: 70 dBm | Antennna: 3 | Time: 1716480 ms
+Tag: E2801170000002076A508D76 | RSSI: 62 dBm | Antennna: 3 | Time: 1716481 ms
+Tag: E2801170000002076A508D78 | RSSI: 69 dBm | Antennna: 3 | Time: 1716482 ms
+Tag: E2801170000002076A50957D | RSSI: 73 dBm | Antennna: 3 | Time: 1716500 ms
+Tag: E2801170000002076A508D76 | RSSI: 62 dBm | Antennna: 3 | Time: 1716500 ms
+Tag: E2801170000002076A508D76 | RSSI: 65 dBm | Antennna: 4 | Time: 1716621 ms
+Tags scanned: 10
+=====================
+
+I (7966) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508D76 | RSSI: 65 dBm | Antennna: 3 | Time: 1717544 ms
+Tag: E2801170000002076A508D78 | RSSI: 77 dBm | Antennna: 3 | Time: 1717611 ms
+Tag: E2801170000002076A508D76 | RSSI: 57 dBm | Antennna: 3 | Time: 1717612 ms
+Tag: E2801170000002076A508D78 | RSSI: 59 dBm | Antennna: 3 | Time: 1717612 ms
+Tag: E2801170000002076A508D76 | RSSI: 58 dBm | Antennna: 3 | Time: 1717613 ms
+Tag: E2801170000002076A508D76 | RSSI: 60 dBm | Antennna: 3 | Time: 1717614 ms
+Tag: E2801170000002076A508D76 | RSSI: 58 dBm | Antennna: 3 | Time: 1717629 ms
+Tag: E2801170000002076A508D76 | RSSI: 61 dBm | Antennna: 3 | Time: 1717665 ms
+Tag: E2801170000002076A508D76 | RSSI: 62 dBm | Antennna: 3 | Time: 1717683 ms
+Tag: E2801170000002076A508D76 | RSSI: 62 dBm | Antennna: 3 | Time: 1717706 ms
+Tags scanned: 10
+=====================
+
+I (9046) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508D78 | RSSI: 62 dBm | Antennna: 2 | Time: 1718619 ms
+Tag: E2801170000002076A508D76 | RSSI: 63 dBm | Antennna: 3 | Time: 1718750 ms
+Tag: E2801170000002076A508C74 | RSSI: 67 dBm | Antennna: 3 | Time: 1718750 ms
+Tag: E2801170000002076A508D78 | RSSI: 72 dBm | Antennna: 3 | Time: 1718768 ms
+Tag: E2801170000002076A508D76 | RSSI: 63 dBm | Antennna: 3 | Time: 1718768 ms
+Tag: E2801170000002076A508C74 | RSSI: 65 dBm | Antennna: 3 | Time: 1718804 ms
+Tag: E2801170000002076A508D78 | RSSI: 70 dBm | Antennna: 3 | Time: 1718804 ms
+Tag: E2801170000002076A508D76 | RSSI: 63 dBm | Antennna: 3 | Time: 1718817 ms
+Tag: E2801170000002076A508D76 | RSSI: 62 dBm | Antennna: 3 | Time: 1718840 ms
+Tag: E2801170000002076A508C74 | RSSI: 64 dBm | Antennna: 3 | Time: 1718840 ms
+Tags scanned: 10
+=====================
+
+I (10176) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508D76 | RSSI: 71 dBm | Antennna: 2 | Time: 1719753 ms
+Tag: E2801170000002076A508D76 | RSSI: 67 dBm | Antennna: 2 | Time: 1719820 ms
+Tag: E2801170000002076A508C74 | RSSI: 64 dBm | Antennna: 2 | Time: 1719821 ms
+Tag: E2801170000002076A508D76 | RSSI: 66 dBm | Antennna: 2 | Time: 1719822 ms
+Tag: E2801170000002076A508C74 | RSSI: 65 dBm | Antennna: 2 | Time: 1719822 ms
+Tag: E2801170000002076A508D76 | RSSI: 66 dBm | Antennna: 2 | Time: 1719823 ms
+Tag: E2801170000002076A508C74 | RSSI: 65 dBm | Antennna: 2 | Time: 1719830 ms
+Tag: E2801170000002076A508D78 | RSSI: 63 dBm | Antennna: 2 | Time: 1719830 ms
+Tag: E2801170000002076A508D76 | RSSI: 71 dBm | Antennna: 2 | Time: 1719848 ms
+Tag: E2801170000002076A50957B | RSSI: 77 dBm | Antennna: 2 | Time: 1719848 ms
+Tags scanned: 10
+=====================
+
+I (11336) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A50957B | RSSI: 69 dBm | Antennna: 2 | Time: 1720910 ms
+Tag: E2801170000002076A508D78 | RSSI: 64 dBm | Antennna: 2 | Time: 1720978 ms
+Tag: E2801170000002076A50957D | RSSI: 62 dBm | Antennna: 2 | Time: 1720979 ms
+Tag: E2801170000002076A50957B | RSSI: 71 dBm | Antennna: 2 | Time: 1720980 ms
+Tag: E2801170000002076A508D78 | RSSI: 62 dBm | Antennna: 2 | Time: 1720980 ms
+Tag: E2801170000002076A508D78 | RSSI: 62 dBm | Antennna: 2 | Time: 1720981 ms
+Tag: E2801170000002076A50957D | RSSI: 62 dBm | Antennna: 2 | Time: 1720982 ms
+Tag: E2801170000002076A50957D | RSSI: 62 dBm | Antennna: 2 | Time: 1720983 ms
+Tag: E2801170000002076A508D78 | RSSI: 62 dBm | Antennna: 2 | Time: 1720983 ms
+Tag: E2801170000002076A508C74 | RSSI: 65 dBm | Antennna: 2 | Time: 1721000 ms
+Tags scanned: 10
+=====================
+
+I (12416) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A50957B | RSSI: 63 dBm | Antennna: 1 | Time: 1721985 ms
+Tag: E2801170000002076A50957D | RSSI: 70 dBm | Antennna: 1 | Time: 1722058 ms
+Tag: E2801170000002076A508D78 | RSSI: 71 dBm | Antennna: 1 | Time: 1722059 ms
+Tag: E2801170000002076A50957A | RSSI: 74 dBm | Antennna: 2 | Time: 1722152 ms
+Tag: E2801170000002076A50957B | RSSI: 65 dBm | Antennna: 2 | Time: 1722152 ms
+Tag: E2801170000002076A50957B | RSSI: 65 dBm | Antennna: 2 | Time: 1722165 ms
+Tag: E2801170000002076A508C7D | RSSI: 68 dBm | Antennna: 2 | Time: 1722183 ms
+Tag: E2801170000002076A508D78 | RSSI: 68 dBm | Antennna: 2 | Time: 1722202 ms
+Tag: E2801170000002076A50957B | RSSI: 64 dBm | Antennna: 2 | Time: 1722219 ms
+Tag: E2801170000002076A50957D | RSSI: 63 dBm | Antennna: 2 | Time: 1722242 ms
+Tags scanned: 10
+=====================
+
+I (13496) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A50957B | RSSI: 65 dBm | Antennna: 1 | Time: 1723070 ms
+Tag: E2801170000002076A508C7E | RSSI: 72 dBm | Antennna: 1 | Time: 1723138 ms
+Tag: E2801170000002076A509570 | RSSI: 70 dBm | Antennna: 1 | Time: 1723139 ms
+Tag: E2801170000002076A50957D | RSSI: 67 dBm | Antennna: 1 | Time: 1723140 ms
+Tag: E2801170000002076A509570 | RSSI: 68 dBm | Antennna: 1 | Time: 1723140 ms
+Tag: E2801170000002076A50957A | RSSI: 67 dBm | Antennna: 1 | Time: 1723141 ms
+Tag: E2801170000002076A508C7D | RSSI: 63 dBm | Antennna: 1 | Time: 1723142 ms
+Tag: E2801170000002076A50957B | RSSI: 62 dBm | Antennna: 1 | Time: 1723155 ms
+Tag: E2801170000002076A508C7D | RSSI: 62 dBm | Antennna: 1 | Time: 1723173 ms
+Tag: E2801170000002076A509570 | RSSI: 63 dBm | Antennna: 1 | Time: 1723191 ms
+Tags scanned: 10
+=====================
+
+I (14576) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A50957C | RSSI: 65 dBm | Antennna: 4 | Time: 1724145 ms
+Tag: E2801170000002076A50957C | RSSI: 69 dBm | Antennna: 1 | Time: 1724271 ms
+Tag: E2801170000002076A50957A | RSSI: 68 dBm | Antennna: 1 | Time: 1724289 ms
+Tag: E2801170000002076A509570 | RSSI: 63 dBm | Antennna: 1 | Time: 1724307 ms
+Tag: E2801170000002076A508C7E | RSSI: 64 dBm | Antennna: 1 | Time: 1724330 ms
+Tag: E2801170000002076A509570 | RSSI: 61 dBm | Antennna: 1 | Time: 1724330 ms
+Tag: E2801170000002076A508C7E | RSSI: 62 dBm | Antennna: 1 | Time: 1724343 ms
+Tag: E2801170000002076A509570 | RSSI: 63 dBm | Antennna: 1 | Time: 1724361 ms
+Tag: E2801170000002076A509570 | RSSI: 63 dBm | Antennna: 1 | Time: 1724379 ms
+Tag: E2801170000002076A508C7E | RSSI: 62 dBm | Antennna: 1 | Time: 1724397 ms
+Tags scanned: 10
+=====================
+
+I (15706) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508C7E | RSSI: 61 dBm | Antennna: 4 | Time: 1725281 ms
+Tag: E2801170000002076A50957C | RSSI: 64 dBm | Antennna: 4 | Time: 1725348 ms
+Tag: E2801170000002076A50957C | RSSI: 63 dBm | Antennna: 4 | Time: 1725349 ms
+Tag: E2801170000002076A508C7E | RSSI: 63 dBm | Antennna: 4 | Time: 1725350 ms
+Tag: E2801170000002076A50957C | RSSI: 68 dBm | Antennna: 4 | Time: 1725350 ms
+Tag: E2801170000002076A508C7E | RSSI: 63 dBm | Antennna: 4 | Time: 1725351 ms
+Tag: E2801170000002076A508C7E | RSSI: 64 dBm | Antennna: 4 | Time: 1725352 ms
+Tag: E2801170000002076A508C7E | RSSI: 67 dBm | Antennna: 1 | Time: 1725500 ms
+Tag: E2801170000002076A509570 | RSSI: 74 dBm | Antennna: 1 | Time: 1725500 ms
+Tag: E2801170000002076A50957B | RSSI: 77 dBm | Antennna: 1 | Time: 1725518 ms
+Tags scanned: 10
+=====================
+
+I (16826) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508C7E | RSSI: 73 dBm | Antennna: 4 | Time: 1726397 ms
+Tag: E2801170000002076A508C7E | RSSI: 65 dBm | Antennna: 4 | Time: 1726468 ms
+Tag: E2801170000002076A508C7E | RSSI: 66 dBm | Antennna: 4 | Time: 1726469 ms
+Tag: E2801170000002076A508C7E | RSSI: 70 dBm | Antennna: 4 | Time: 1726485 ms
+Tag: E2801170000002076A50957C | RSSI: 73 dBm | Antennna: 4 | Time: 1726504 ms
+Tag: E2801170000002076A50957C | RSSI: 77 dBm | Antennna: 4 | Time: 1726544 ms
+Tag: E2801170000002076A508C7E | RSSI: 77 dBm | Antennna: 4 | Time: 1726544 ms
+Tag: E2801170000002076A50957C | RSSI: 77 dBm | Antennna: 4 | Time: 1726557 ms
+Tag: E2801170000002076A50957C | RSSI: 77 dBm | Antennna: 4 | Time: 1726575 ms
+Tag: E2801170000002076A50957C | RSSI: 77 dBm | Antennna: 1 | Time: 1726719 ms
+Tags scanned: 10
+=====================
+
+I (18676) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A509477 | RSSI: 77 dBm | Antennna: 2 | Time: 1728249 ms
+Tag: E2801170000002076A509477 | RSSI: 77 dBm | Antennna: 2 | Time: 1728318 ms
+Tag: E2801170000002076A509477 | RSSI: 77 dBm | Antennna: 2 | Time: 1728319 ms
+Tag: E2801170000002076A509477 | RSSI: 77 dBm | Antennna: 2 | Time: 1728321 ms
+Tag: E2801170000002076A509477 | RSSI: 67 dBm | Antennna: 2 | Time: 1728375 ms
+Tag: E2801170000002076A509477 | RSSI: 66 dBm | Antennna: 2 | Time: 1728429 ms
+Tag: E2801170000002076A509477 | RSSI: 72 dBm | Antennna: 3 | Time: 1728555 ms
+Tag: E2801170000002076A509477 | RSSI: 74 dBm | Antennna: 3 | Time: 1728573 ms
+Tag: E2801170000002076A509477 | RSSI: 69 dBm | Antennna: 3 | Time: 1728592 ms
+Tag: E2801170000002076A509477 | RSSI: 67 dBm | Antennna: 3 | Time: 1728627 ms
+Tags scanned: 10
+=====================
+
+I (19756) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A509477 | RSSI: 59 dBm | Antennna: 1 | Time: 1729329 ms
+Tag: E2801170000002076A509477 | RSSI: 58 dBm | Antennna: 1 | Time: 1729398 ms
+Tag: E2801170000002076A509479 | RSSI: 67 dBm | Antennna: 1 | Time: 1729399 ms
+Tag: E2801170000002076A509477 | RSSI: 60 dBm | Antennna: 1 | Time: 1729400 ms
+Tag: E2801170000002076A509479 | RSSI: 67 dBm | Antennna: 1 | Time: 1729400 ms
+Tag: E2801170000002076A509479 | RSSI: 70 dBm | Antennna: 2 | Time: 1729514 ms
+Tag: E2801170000002076A509477 | RSSI: 58 dBm | Antennna: 2 | Time: 1729514 ms
+Tag: E2801170000002076A509479 | RSSI: 71 dBm | Antennna: 2 | Time: 1729532 ms
+Tag: E2801170000002076A509477 | RSSI: 65 dBm | Antennna: 2 | Time: 1729532 ms
+Tag: E2801170000002076A509477 | RSSI: 65 dBm | Antennna: 2 | Time: 1729563 ms
+Tags scanned: 10
+=====================
+
+I (20876) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A509D74 | RSSI: 69 dBm | Antennna: 1 | Time: 1730445 ms
+Tag: E2801170000002076A509D74 | RSSI: 70 dBm | Antennna: 1 | Time: 1730518 ms
+Tag: E2801170000002076A509477 | RSSI: 73 dBm | Antennna: 1 | Time: 1730519 ms
+Tag: E2801170000002076A509D74 | RSSI: 70 dBm | Antennna: 1 | Time: 1730520 ms
+Tag: E2801170000002076A509C7C | RSSI: 64 dBm | Antennna: 1 | Time: 1730520 ms
+Tag: E2801170000002076A509D74 | RSSI: 68 dBm | Antennna: 1 | Time: 1730522 ms
+Tag: E2801170000002076A509C7C | RSSI: 65 dBm | Antennna: 1 | Time: 1730522 ms
+Tag: E2801170000002076A509C7C | RSSI: 65 dBm | Antennna: 1 | Time: 1730535 ms
+Tag: E2801170000002076A509C7C | RSSI: 65 dBm | Antennna: 1 | Time: 1730553 ms
+Tag: E2801170000002076A509C7C | RSSI: 62 dBm | Antennna: 1 | Time: 1730571 ms
+Tags scanned: 10
+=====================
+
+I (21956) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A509D74 | RSSI: 64 dBm | Antennna: 4 | Time: 1731530 ms
+Tag: E2801170000002076A509478 | RSSI: 63 dBm | Antennna: 4 | Time: 1731598 ms
+Tag: E2801170000002076A509478 | RSSI: 73 dBm | Antennna: 1 | Time: 1731674 ms
+Tag: E2801170000002076A509D74 | RSSI: 70 dBm | Antennna: 1 | Time: 1731674 ms
+Tag: E2801170000002076A509C7C | RSSI: 71 dBm | Antennna: 1 | Time: 1731687 ms
+Tag: E2801170000002076A509D74 | RSSI: 70 dBm | Antennna: 1 | Time: 1731705 ms
+Tag: E2801170000002076A509C7C | RSSI: 69 dBm | Antennna: 1 | Time: 1731746 ms
+Tag: E2801170000002076A509D74 | RSSI: 69 dBm | Antennna: 1 | Time: 1731746 ms
+Tag: E2801170000002076A509D74 | RSSI: 67 dBm | Antennna: 1 | Time: 1731759 ms
+Tag: E2801170000002076A509D74 | RSSI: 64 dBm | Antennna: 1 | Time: 1731795 ms
+Tags scanned: 10
+=====================
+
+I (23036) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A509D74 | RSSI: 67 dBm | Antennna: 4 | Time: 1732610 ms
+Tag: E2801170000002076A509478 | RSSI: 71 dBm | Antennna: 4 | Time: 1732678 ms
+Tag: E2801170000002076A509D74 | RSSI: 59 dBm | Antennna: 4 | Time: 1732679 ms
+Tag: E2801170000002076A509478 | RSSI: 58 dBm | Antennna: 4 | Time: 1732680 ms
+Tag: E2801170000002076A509D74 | RSSI: 59 dBm | Antennna: 4 | Time: 1732680 ms
+Tag: E2801170000002076A509478 | RSSI: 62 dBm | Antennna: 4 | Time: 1732681 ms
+Tag: E2801170000002076A509D74 | RSSI: 61 dBm | Antennna: 4 | Time: 1732682 ms
+Tag: E2801170000002076A509D74 | RSSI: 62 dBm | Antennna: 4 | Time: 1732695 ms
+Tag: E2801170000002076A509478 | RSSI: 61 dBm | Antennna: 4 | Time: 1732713 ms
+Tag: E2801170000002076A509D74 | RSSI: 63 dBm | Antennna: 4 | Time: 1732736 ms
+Tags scanned: 10
+=====================
+
+I (24216) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A509478 | RSSI: 72 dBm | Antennna: 4 | Time: 1733793 ms
+Tag: E2801170000002076A509478 | RSSI: 61 dBm | Antennna: 4 | Time: 1733860 ms
+Tag: E2801170000002076A509476 | RSSI: 60 dBm | Antennna: 4 | Time: 1733861 ms
+Tag: E2801170000002076A509476 | RSSI: 60 dBm | Antennna: 4 | Time: 1733862 ms
+Tag: E2801170000002076A509478 | RSSI: 58 dBm | Antennna: 4 | Time: 1733862 ms
+Tag: E2801170000002076A509476 | RSSI: 62 dBm | Antennna: 4 | Time: 1733870 ms
+Tag: E2801170000002076A509478 | RSSI: 62 dBm | Antennna: 4 | Time: 1733870 ms
+Tag: E2801170000002076A509476 | RSSI: 61 dBm | Antennna: 4 | Time: 1733888 ms
+Tag: E2801170000002076A509478 | RSSI: 63 dBm | Antennna: 4 | Time: 1733888 ms
+Tag: E2801170000002076A509476 | RSSI: 62 dBm | Antennna: 4 | Time: 1733903 ms
+Tags scanned: 10
+=====================
+
+I (25296) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A509D75 | RSSI: 64 dBm | Antennna: 3 | Time: 1734873 ms
+Tag: E2801170000002076A509D75 | RSSI: 65 dBm | Antennna: 3 | Time: 1734940 ms
+Tag: E2801170000002076A509D72 | RSSI: 72 dBm | Antennna: 4 | Time: 1735017 ms
+Tag: E2801170000002076A509D75 | RSSI: 67 dBm | Antennna: 4 | Time: 1735040 ms
+Tag: E2801170000002076A509D73 | RSSI: 68 dBm | Antennna: 4 | Time: 1735040 ms
+Tag: E2801170000002076A509D75 | RSSI: 67 dBm | Antennna: 4 | Time: 1735058 ms
+Tag: E2801170000002076A509D72 | RSSI: 70 dBm | Antennna: 4 | Time: 1735058 ms
+Tag: E2801170000002076A509D72 | RSSI: 67 dBm | Antennna: 4 | Time: 1735076 ms
+Tag: E2801170000002076A509D75 | RSSI: 67 dBm | Antennna: 4 | Time: 1735076 ms
+Tag: E2801170000002076A509D75 | RSSI: 65 dBm | Antennna: 4 | Time: 1735107 ms
+Tags scanned: 10
+=====================
+
+I (26386) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A509D72 | RSSI: 69 dBm | Antennna: 3 | Time: 1735958 ms
+Tag: E2801170000002076A509D75 | RSSI: 77 dBm | Antennna: 3 | Time: 1736028 ms
+Tag: E2801170000002076A509D72 | RSSI: 70 dBm | Antennna: 3 | Time: 1736029 ms
+Tag: E2801170000002076A508C72 | RSSI: 74 dBm | Antennna: 3 | Time: 1736030 ms
+Tag: E2801170000002076A508C72 | RSSI: 72 dBm | Antennna: 3 | Time: 1736030 ms
+Tag: E2801170000002076A509D75 | RSSI: 74 dBm | Antennna: 3 | Time: 1736031 ms
+Tag: E2801170000002076A509D75 | RSSI: 71 dBm | Antennna: 3 | Time: 1736032 ms
+Tag: E2801170000002076A508C72 | RSSI: 71 dBm | Antennna: 3 | Time: 1736033 ms
+Tag: E2801170000002076A508C72 | RSSI: 68 dBm | Antennna: 3 | Time: 1736048 ms
+Tag: E2801170000002076A509D72 | RSSI: 70 dBm | Antennna: 3 | Time: 1736049 ms
+Tags scanned: 10
+=====================
+
+I (27466) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508C72 | RSSI: 72 dBm | Antennna: 2 | Time: 1737038 ms
+Tag: E2801170000002076A508C7F | RSSI: 65 dBm | Antennna: 2 | Time: 1737108 ms
+Tag: E2801170000002076A508C72 | RSSI: 77 dBm | Antennna: 3 | Time: 1737182 ms
+Tag: E2801170000002076A508C7F | RSSI: 69 dBm | Antennna: 3 | Time: 1737182 ms
+Tag: E2801170000002076A508C72 | RSSI: 72 dBm | Antennna: 3 | Time: 1737200 ms
+Tag: E2801170000002076A508C7F | RSSI: 70 dBm | Antennna: 3 | Time: 1737200 ms
+Tag: E2801170000002076A508C72 | RSSI: 72 dBm | Antennna: 3 | Time: 1737213 ms
+Tag: E2801170000002076A508C7F | RSSI: 69 dBm | Antennna: 3 | Time: 1737231 ms
+Tag: E2801170000002076A508C7F | RSSI: 58 dBm | Antennna: 3 | Time: 1737254 ms
+Tag: E2801170000002076A508C72 | RSSI: 64 dBm | Antennna: 3 | Time: 1737254 ms
+Tags scanned: 10
+=====================
+
+I (28536) CartTracking: Burst done
+
+===== TAG BURST =====
+Tag: E2801170000002076A508C7F | RSSI: 71 dBm | Antennna: 2 | Time: 1738113 ms
+Tag: E2801170000002076A508C7F | RSSI: 69 dBm | Antennna: 2 | Time: 1738180 ms
+Tag: E2801170000002076A508C7F | RSSI: 67 dBm | Antennna: 2 | Time: 1738181 ms
+Tag: E2801170000002076A508C7F | RSSI: 77 dBm | Antennna: 3 | Time: 1738401 ms
+Tag: E2801170000002076A508C7F | RSSI: 73 dBm | Antennna: 3 | Time: 1738419 ms
+Tag: E2801170000002076A508C7F | RSSI: 71 dBm | Antennna: 3 | Time: 1738437 ms
+Tag: E2801170000002076A508C7F | RSSI: 68 dBm | Antennna: 3 | Time: 1738455 ms
+Tags scanned: 7
+=====================
+

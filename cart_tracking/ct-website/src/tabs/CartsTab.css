@@ -1,0 +1,31 @@
+.carts-tab-container {
+  padding: 1rem;
+}
+
+.carts-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.carts-table th,
+.carts-table td {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.carts-table th {
+  background-color: #f3f4f6;
+}
+
+.error {
+  color: red;
+  margin-top: 0.5rem;
+}
+
+.no-carts {
+  margin-top: 1rem;
+  color: #6b7280;
+  font-style: italic;
+}

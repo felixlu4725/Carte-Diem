@@ -1,0 +1,7 @@
+{ "burst": [
+{"tag":"E20034120123456789ABCDEF", "rssi":78, "antenna":1, "time":1708456123456},
+{"tag":"E20034123456789012345678", "rssi":74, "antenna":2, "time":1708456123499}
+]}
+{ "burst": [
+{"tag":"E200ABCD1234567890ABCDEF", "rssi":71, "antenna":2, "time":1708456131280}
+]}

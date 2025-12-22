@@ -1,0 +1,32 @@
+# Cart log files
+# cart_logs/
+
+# Generated images (heatmaps and paths)
+# generated_images/
+
+# Database files
+*.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Store images
+images/
