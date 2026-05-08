@@ -1,6 +1,6 @@
 # Carte Diem - Smart Shopping Cart 
 
-[Video walkthrough](https://youtu.be/1DGey0mXCpI?si=HsvZ1QVfaDtIknsd)
+# [Product Demo!](https://youtu.be/1DGey0mXCpI?si=HsvZ1QVfaDtIknsd)
 
 Carte Diem is a add-on module that integrates smart features to regular carts. This device eliminates the need for checkout lines while maintaining anti-theft features. It’s modularity allows stores to easily implement this technology into the existing ecosystems.
 
